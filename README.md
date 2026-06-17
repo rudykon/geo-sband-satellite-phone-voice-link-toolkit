@@ -1,52 +1,142 @@
-# Step 1 开源复现包
+# Low-Tail Link-Closure Screening for GEO S-Band D2C Voice
 
-该包用于复现 Step 1 稿件中的链路侧筛选产物，可直接作为公开 GitHub 仓库发布：
+This repository is a standalone reproducibility package for a Step 1 study on
+direct-to-cell (D2C) GEO S-band voice links in remote areas.
 
-`Low-Tail Link-Closure Screening for Handheld GEO S-Band Direct-to-Cell Voice in Remote Areas`
+It provides a public-parameter, vendor-neutral screening workflow for estimating
+whether a handheld satellite-phone style terminal can close a low-rate voice
+bearer under posture loss, shadowing, LOS/NLOS mixing, terrain blockage, and
+low-tail outage-capacity constraints.
 
-其中包含用于 GEO S-band 链路预算、中断容量校验、投稿前敏感性检查的 Python 脚本，以及用于 Step 1 PHY/LMS 交叉校验的可选 MATLAB/Simulink 入口。
+The repository is designed to be self-contained for GitHub release: the Python
+workflow regenerates the numerical tables and figures, while the MATLAB/Simulink
+workflow is optional and used for cross-checking selected Step 1 validation
+outputs.
 
-## 内容
+## What This Project Does
 
-- `src/`：用于重新生成 CSV 文件和图件的 Python 脚本。
-- `matlab_step1/`：可选 MATLAB/Simulink 校验脚本和生成的模型文件。
-- `expected_outputs/`：论文使用的 CSV 摘要和选定参考图。
-- `run_reproduce.py`：一键 Python 复现入口。
-- `PUBLIC_RELEASE.md`：公开发布范围和注意事项。
+- Builds a generic GEO S-band direct-to-cell voice-link approximation.
+- Computes narrowband carrier budgets, voice availability, and outage-capacity
+  validation outputs.
+- Compares average-SNR and single-state screening against a LOS/NLOS mixture
+  model to expose low-tail risk.
+- Ranks sensitivity to NLOS loss, LOS probability, PA compression, rain loss,
+  voice threshold, posture, shadowing, and residual Doppler.
+- Provides optional MATLAB/Simulink scripts for independent PHY/LMS validation.
 
-## Python 复现
+This is not a proprietary handset implementation, field-test dataset, or vendor
+calibration package.
 
-安装依赖：
+## Key Results
+
+For the 2.4 kbps voice bearer, the mixture model gives the following baseline
+availability:
+
+| Scenario | Availability | P10 Eb/N0 |
+| --- | ---: | ---: |
+| Open plain | 100.0% | 19.46 dB |
+| Forest edge | 99.95% | 14.57 dB |
+| Canyon valley | 91.43% | 1.68 dB |
+| Moving trail | 79.88% | -2.93 dB |
+| Tent/shelter | 46.73% | -14.47 dB |
+
+The average-SNR screen predicts 100% availability in all five scenarios, which
+overstates the low-tail result by up to 53.3 percentage points in the
+tent/shelter case. The largest tested sensitivity is NLOS excess loss, with a
+maximum availability swing of 15.46 percentage points.
+
+See [RESULTS.md](RESULTS.md) for the fuller result summary and pointers to the
+CSV/PDF artifacts under `expected_outputs/`.
+
+## Repository Layout
+
+```text
+.
+├── README.md
+├── RESULTS.md
+├── PUBLIC_RELEASE.md
+├── LICENSE
+├── requirements.txt
+├── run_reproduce.py
+├── src/
+│   ├── tiantong_sband_link.py
+│   ├── outage_capacity_bound.py
+│   └── step1_completion.py
+├── expected_outputs/
+│   ├── geo_satphone/
+│   ├── matlab_step1/
+│   └── plots/
+└── matlab_step1/
+```
+
+## Quick Start
+
+Create a Python environment and install the required packages:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-运行：
+Run the full Python reproduction workflow:
 
 ```bash
 python run_reproduce.py
 ```
 
-脚本会把重新生成的产物写入该包内部的 `outputs/`。重点检查目标包括：
+The workflow writes generated artifacts to `outputs/`:
 
+```text
+outputs/
+├── geo_satphone/
+├── outage_capacity/
+├── plots/
+├── requested_extensions/
+└── step1_link/
+```
+
+`outputs/` is intentionally ignored by Git. Reference CSV/PDF artifacts used by
+the paper are committed under `expected_outputs/`.
+
+## Expected Outputs
+
+Important generated files include:
+
+- `outputs/geo_satphone/voice_availability.csv`
 - `outputs/geo_satphone/screening_baseline_comparison.csv`
 - `outputs/geo_satphone/screening_sensitivity_ranking.csv`
 - `outputs/geo_satphone/dwell_time_sensitivity.csv`
+- `outputs/outage_capacity/outage_capacity_results.json`
+- `outputs/requested_extensions/step1_completion_results.json`
 - `outputs/plots/geo_satphone_c0p01_sensitivity_ranking.pdf`
 - `outputs/plots/geo_satphone_dwell_time_sensitivity.pdf`
 
-## 可选 MATLAB/Simulink 校验
+## Optional MATLAB/Simulink Validation
 
-MATLAB 路径是可选流程，需要已安装 MATLAB 和 Simulink。参考 PHY（reference PHY）门限校准还需要 Communications Toolbox。在 MATLAB 中运行：
+The MATLAB workflow is optional. It requires MATLAB and Simulink; the reference
+PHY threshold calibration also requires Communications Toolbox.
+
+From MATLAB:
 
 ```matlab
 cd("matlab_step1")
 run_step1_phy_lms_upgrade
 ```
 
-如果所需产品已安装，该命令会在 `outputs/matlab_step1/` 下重新生成 PHY/LMS 校验摘要。
+Expected MATLAB outputs are written to `outputs/matlab_step1/`. See
+[MATLAB_SIMULINK.md](MATLAB_SIMULINK.md) for details.
 
-## 范围说明
+## Reproducibility Notes
 
-该包用于系统级筛选复现，不是厂商终端实现，也不是现场测试数据。弱代理参数（proxy parameters）会在敏感性扫描中显式暴露，以便未来获得终端实测和地形轨迹数据后直接替换。
+- Random seeds are fixed in the Python scripts.
+- The repository uses public-style proxy parameters and sensitivity sweeps, not
+  proprietary measurements.
+- Some plots may emit harmless Matplotlib layout/font warnings depending on the
+  local environment.
+- Numerical values can change slightly across NumPy/SciPy/Matplotlib versions,
+  but the qualitative rankings should remain stable.
+
+## License
+
+This project is released under the MIT License. See [LICENSE](LICENSE).
