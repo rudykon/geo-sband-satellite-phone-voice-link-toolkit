@@ -49,7 +49,28 @@ tent/shelter case. The largest tested sensitivity is NLOS excess loss, with a
 maximum availability swing of 15.46 percentage points.
 
 See [RESULTS.md](RESULTS.md) for the fuller result summary and pointers to the
-CSV/PDF artifacts under `expected_outputs/`.
+CSV/PNG/PDF artifacts under `expected_outputs/`.
+
+## Visual Results
+
+The figures below are committed under `expected_outputs/plots/` so they render
+directly on GitHub.
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening overestimate low-tail voice availability" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_sensitivity_ranking.png" alt="Sensitivity ranking for 2.4 kbps low-tail screening" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_dwell_time_sensitivity.png" alt="NLOS dwell-time sensitivity across remote-area scenarios" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/outage_capacity_scenarios.png" alt="Outage-capacity comparison under LOS/NLOS mixture penalties" width="760">
+</p>
 
 ## Repository Layout
 

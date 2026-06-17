@@ -30,6 +30,26 @@
 
 更完整的结果说明见 [RESULTS.md](RESULTS.md)，参考输出在 `expected_outputs/` 目录中。
 
+## 结果图示
+
+以下图片已提交到 `expected_outputs/plots/`，可以在 GitHub README 中直接显示。
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="平均 SNR 和单状态模型会高估低尾语音可用性" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_sensitivity_ranking.png" alt="2.4 kbps 低尾筛选灵敏度排序" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/geo_satphone_dwell_time_sensitivity.png" alt="远程地区场景下 NLOS dwell-time 灵敏度" width="760">
+</p>
+
+<p align="center">
+  <img src="expected_outputs/plots/outage_capacity_scenarios.png" alt="LOS/NLOS 混合惩罚下的中断容量对比" width="760">
+</p>
+
 ## 快速开始
 
 创建 Python 环境并安装依赖：
