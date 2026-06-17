@@ -1,0 +1,16 @@
+# Runtime-generated artifacts
+/outputs/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# MATLAB autosave and temporary files
+*.asv
+*.m~
+
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
