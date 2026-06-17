@@ -1,9 +1,11 @@
-# GEO S-Band D2C Voice Link Screening Toolkit
+# GEO S-Band Satellite Phone Voice Link Toolkit
+
+[中文说明](README.zh-CN.md)
 
 This repository is a standalone open-source research toolkit for Step 1 of a
-two-step direct-to-cell (D2C) satellite service study. Step 1 focuses on GEO
-S-band voice-link closure in remote areas and provides the link-side baseline
-used by later service-layer work.
+two-step satellite-phone direct-to-cell (D2C) service study. Step 1 focuses on
+GEO S-band voice-link closure in remote areas and provides the link-side
+baseline used by later service-layer work.
 
 The toolkit provides a public-parameter, vendor-neutral screening workflow for
 estimating whether a handheld satellite-phone style terminal can close a
@@ -14,9 +16,9 @@ The repository is designed to be self-contained for GitHub release: the Python
 workflow regenerates the numerical tables and figures, and the optional
 MATLAB/Simulink workflow cross-checks selected Step 1 validation outputs.
 
-## What This Project Does
+## What This Toolkit Does
 
-- Builds a generic GEO S-band direct-to-cell voice-link approximation.
+- Builds a generic GEO S-band satellite-phone voice-link approximation.
 - Computes narrowband carrier budgets, voice availability, and outage-capacity
   validation outputs.
 - Compares average-SNR and single-state screening against a LOS/NLOS mixture
@@ -54,6 +56,7 @@ CSV/PDF artifacts under `expected_outputs/`.
 ```text
 .
 ├── README.md
+├── README.zh-CN.md
 ├── RESULTS.md
 ├── PUBLIC_RELEASE.md
 ├── LICENSE
