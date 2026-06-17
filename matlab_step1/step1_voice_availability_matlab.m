@@ -1,5 +1,5 @@
 function rows = step1_voice_availability_matlab(cfg)
-%STEP1_VOICE_AVAILABILITY_MATLAB Reproduce Step 1 voice availability.
+%STEP1_VOICE_AVAILABILITY_MATLAB Regenerate Step 1 voice availability.
 
 fprintf("Running MATLAB voice-availability Monte Carlo...\n");
 

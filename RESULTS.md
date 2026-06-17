@@ -1,7 +1,7 @@
 # Result Summary
 
 This page summarizes the main reference outputs committed under
-`expected_outputs/`. Running `python run_reproduce.py` regenerates the same types
+`expected_outputs/`. Running `python run_all.py` regenerates the same types
 of files under `outputs/`.
 
 ## Baseline Voice Availability
@@ -107,8 +107,8 @@ Reference file:
 expected_outputs/matlab_step1/three_way_alignment.csv
 ```
 
-Interpretation: MATLAB and Simulink reproduce the Python system-level
-availability model closely for the selected validation scenario.
+Interpretation: MATLAB and Simulink match the Python system-level availability
+model closely for the selected validation scenario.
 
 ## Reference Figures
 

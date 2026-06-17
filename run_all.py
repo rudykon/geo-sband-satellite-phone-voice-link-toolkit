@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the Step 1 open reproducibility workflow."""
+"""Run the Step 1 open-source research toolkit workflow."""
 from __future__ import annotations
 
 import subprocess
@@ -17,9 +17,9 @@ SCRIPTS = [
 
 def main() -> None:
     for script in SCRIPTS:
-        print(f"[reproduce] running {script.relative_to(ROOT)}")
+        print(f"[run] running {script.relative_to(ROOT)}")
         subprocess.check_call([sys.executable, str(script)], cwd=ROOT)
-    print("[reproduce] complete")
+    print("[run] complete")
     print(ROOT / "outputs")
 
 

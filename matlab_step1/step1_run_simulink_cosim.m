@@ -96,10 +96,10 @@ end
 end
 
 function step1_switch_to_precomputed_model(modelName)
-linkBlock = modelName + "/Paper1 link closure";
+linkBlock = modelName + "/Step1 link closure";
 fallbackBlock = modelName + "/precomputed_metrics";
 
-if ~isempty(find_system(modelName, "SearchDepth", 1, "Name", "Paper1 link closure"))
+if ~isempty(find_system(modelName, "SearchDepth", 1, "Name", "Step1 link closure"))
     delete_block(linkBlock);
 end
 if isempty(find_system(modelName, "SearchDepth", 1, "Name", "precomputed_metrics"))

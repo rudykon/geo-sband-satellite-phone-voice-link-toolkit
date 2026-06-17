@@ -369,7 +369,7 @@ def run(seed: int = 20260608, n_mc: int = 200_000) -> None:
         "voice_threshold_sensitivity": threshold_sensitivity_rows,
         "urban_ablation": ablation_rows,
         "notes": [
-            "No vendor-specific implementation is reproduced; this is a generic GEO S-band satellite-phone scenario approximation.",
+            "No vendor-specific implementation is modeled; this is a generic GEO S-band satellite-phone scenario approximation.",
             "DSSS is treated as a comparison baseline; the main bearer is narrowband voice.",
         ],
     }, ensure_ascii=False, indent=2), encoding="utf-8")

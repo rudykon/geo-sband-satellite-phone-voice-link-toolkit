@@ -28,7 +28,7 @@ add_block("simulink/Sources/Constant", modelName + "/seed", ...
 add_block("simulink/Signal Routing/Mux", modelName + "/scenario_inputs", ...
     "Inputs", "3", "Position", [215 105 245 220]);
 
-linkBlock = modelName + "/Paper1 link closure";
+linkBlock = modelName + "/Step1 link closure";
 forcePrecomputed = strcmp(getenv('STEP1_FORCE_PRECOMPUTED_SIMULINK'), '1');
 try
     if forcePrecomputed
@@ -57,8 +57,8 @@ add_line(modelName, "scenario_index/1", "scenario_inputs/1", "autorouting", "on"
 add_line(modelName, "n_mc/1", "scenario_inputs/2", "autorouting", "on");
 add_line(modelName, "seed/1", "scenario_inputs/3", "autorouting", "on");
 if strcmp(modelMode, 'matlab_function_block')
-    add_line(modelName, "scenario_inputs/1", "Paper1 link closure/1", "autorouting", "on");
-    add_line(modelName, "Paper1 link closure/1", "metrics_to_workspace/1", "autorouting", "on");
+    add_line(modelName, "scenario_inputs/1", "Step1 link closure/1", "autorouting", "on");
+    add_line(modelName, "Step1 link closure/1", "metrics_to_workspace/1", "autorouting", "on");
 else
     add_line(modelName, "precomputed_metrics/1", "metrics_to_workspace/1", "autorouting", "on");
 end

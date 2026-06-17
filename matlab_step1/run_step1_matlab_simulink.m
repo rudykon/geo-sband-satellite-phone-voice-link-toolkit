@@ -1,6 +1,6 @@
 %RUN_STEP1_MATLAB_SIMULINK Independent MATLAB/Simulink validation for Step 1.
 %
-% This script reproduces the Step 1 link-side voice-availability and
+% This script regenerates the Step 1 link-side voice-availability and
 % outage-capacity calculations in MATLAB. When Simulink is installed, it also
 % builds and runs a generated system-level Simulink orchestration model.
 

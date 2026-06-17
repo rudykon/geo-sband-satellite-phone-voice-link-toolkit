@@ -1,17 +1,18 @@
-# Low-Tail Link-Closure Screening for GEO S-Band D2C Voice
+# GEO S-Band D2C Voice Link Screening Toolkit
 
-This repository is a standalone reproducibility package for a Step 1 study on
-direct-to-cell (D2C) GEO S-band voice links in remote areas.
+This repository is a standalone open-source research toolkit for Step 1 of a
+two-step direct-to-cell (D2C) satellite service study. Step 1 focuses on GEO
+S-band voice-link closure in remote areas and provides the link-side baseline
+used by later service-layer work.
 
-It provides a public-parameter, vendor-neutral screening workflow for estimating
-whether a handheld satellite-phone style terminal can close a low-rate voice
-bearer under posture loss, shadowing, LOS/NLOS mixing, terrain blockage, and
-low-tail outage-capacity constraints.
+The toolkit provides a public-parameter, vendor-neutral screening workflow for
+estimating whether a handheld satellite-phone style terminal can close a
+low-rate voice bearer under posture loss, shadowing, LOS/NLOS mixing, terrain
+blockage, and low-tail outage-capacity constraints.
 
 The repository is designed to be self-contained for GitHub release: the Python
-workflow regenerates the numerical tables and figures, while the MATLAB/Simulink
-workflow is optional and used for cross-checking selected Step 1 validation
-outputs.
+workflow regenerates the numerical tables and figures, and the optional
+MATLAB/Simulink workflow cross-checks selected Step 1 validation outputs.
 
 ## What This Project Does
 
@@ -57,7 +58,7 @@ CSV/PDF artifacts under `expected_outputs/`.
 ├── PUBLIC_RELEASE.md
 ├── LICENSE
 ├── requirements.txt
-├── run_reproduce.py
+├── run_all.py
 ├── src/
 │   ├── tiantong_sband_link.py
 │   ├── outage_capacity_bound.py
@@ -79,13 +80,13 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-Run the full Python reproduction workflow:
+Run the core Python workflow:
 
 ```bash
-python run_reproduce.py
+python run_all.py
 ```
 
-The workflow writes generated artifacts to `outputs/`:
+The workflow writes newly generated artifacts to `outputs/`:
 
 ```text
 outputs/
@@ -127,7 +128,7 @@ run_step1_phy_lms_upgrade
 Expected MATLAB outputs are written to `outputs/matlab_step1/`. See
 [MATLAB_SIMULINK.md](MATLAB_SIMULINK.md) for details.
 
-## Reproducibility Notes
+## Notes and Scope
 
 - Random seeds are fixed in the Python scripts.
 - The repository uses public-style proxy parameters and sensitivity sweeps, not
