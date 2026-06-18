@@ -15,7 +15,7 @@
 | 直接看公开结果 | 打开 `README.zh-CN.md`、`RESULTS.md` 或 `docs/index.html` | 图、表、CSV 链接 |
 | 快速跑一次链路筛选 | `python quick_run.py` | `outputs/quick_run/quick_summary.*` |
 | 测一个场景 | `python quick_run.py --scenario canyon --added-loss-db 2` | 终端表格和 quick report |
-| 打开可视化界面 | Windows 双击 `start_dashboard.bat`，或运行 `streamlit run app.py` | 浏览器里的滑块、图和表 |
+| 打开可视化界面 | `streamlit run app.py` | 浏览器里的滑块、图和表 |
 | 自己改参数做实验 | 打开 `examples/quick_start.ipynb` | 可编辑 notebook |
 | 完整重新生成参考结果 | `python run_all.py` | MATLAB/Simulink 支撑的参考输出 |
 
@@ -138,8 +138,6 @@ outputs/
 ├── requirements-dashboard.txt
 ├── requirements.txt       # 完整可选依赖
 ├── quick_run.py           # 最简单命令行入口
-├── quick_run.bat          # Windows 双击快速报告
-├── start_dashboard.bat    # Windows 双击 dashboard
 ├── run_all.py             # 完整参考流程入口
 ├── app.py                 # Streamlit dashboard
 ├── examples/              # Notebook 示例

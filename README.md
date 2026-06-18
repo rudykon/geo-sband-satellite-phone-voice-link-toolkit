@@ -27,7 +27,7 @@ reference tables from scratch.
 | Read the released results | Open `README.md`, `RESULTS.md`, or `docs/index.html` | Figures, result tables, CSV links |
 | Run a quick Python screen | `python quick_run.py` | `outputs/quick_run/quick_summary.*` |
 | Test one scenario | `python quick_run.py --scenario canyon --added-loss-db 2` | Console table plus quick report |
-| Open the visual dashboard | Windows: double-click `start_dashboard.bat` or run `streamlit run app.py` | Browser UI with sliders and plots |
+| Open the visual dashboard | `streamlit run app.py` | Browser UI with sliders and plots |
 | Change parameters in a notebook | Open `examples/quick_start.ipynb` | Editable research workflow |
 | Regenerate full reference outputs | `python run_all.py` | MATLAB/Simulink-backed reference outputs |
 
@@ -119,8 +119,6 @@ directly on GitHub.
 ├── requirements-lite.txt
 ├── requirements-dashboard.txt
 ├── quick_run.py
-├── quick_run.bat
-├── start_dashboard.bat
 ├── run_all.py
 ├── app.py
 ├── examples/

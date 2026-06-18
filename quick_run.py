@@ -226,7 +226,7 @@ def main() -> int:
 
     print(f"\nWrote quick-run files to: {args.output_dir}")
     print("Next steps:")
-    print("- Open the dashboard: start_dashboard.bat")
+    print("- Open the dashboard: streamlit run app.py")
     print("- Full reference path with MATLAB/Simulink: python run_all.py")
     return 0
 
