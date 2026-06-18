@@ -35,6 +35,10 @@
 以下图片已提交到 `expected_outputs/figures/all/`，可以在 GitHub README 中直接显示。
 
 <p align="center">
+  <img src="expected_outputs/figures/all/geo_s_band_d2c_voice_link_simulation_flow.png" alt="GEO S-band 语音链路低尾筛选工作流" width="900">
+</p>
+
+<p align="center">
   <img src="expected_outputs/figures/all/geo_satphone_screening_baseline_comparison.png" alt="平均 SNR 和单状态模型会扭曲低尾语音可用性" width="760">
 </p>
 
@@ -58,6 +62,12 @@
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
+```
+
+启动交互式 dashboard：
+
+```bash
+streamlit run app.py
 ```
 
 运行完整参考主流程：
@@ -88,6 +98,12 @@ outputs/
 
 `outputs/` 不提交到 Git。`archive/` 只保存本机旧运行残留；论文使用的参考 CSV/PDF 已放在 `expected_outputs/`，便于直接查看。
 
+## 交互式和静态展示
+
+- `app.py` 提供 Streamlit dashboard，可以选择场景、调整代理参数、查看可用性、baseline 对比、灵敏度排序和结果图。
+- `examples/quick_start.ipynb` 是面向科研用户的 notebook 示例，方便修改参数、查看表格和画图。
+- `docs/index.html` 是 GitHub Pages 静态结果页。仓库设置中把 GitHub Pages 来源设为 `docs/` 即可发布。
+
 ## 目录说明
 
 ```text
@@ -98,6 +114,9 @@ outputs/
 ├── PUBLIC_RELEASE.md      # 开源发布说明
 ├── requirements.txt       # Python 依赖
 ├── run_all.py             # 主入口
+├── app.py                 # Streamlit dashboard
+├── examples/              # Notebook 示例
+├── docs/                  # GitHub Pages 静态页
 ├── src/                   # Python 计算脚本
 ├── expected_outputs/      # 已整理的参考输出
 └── matlab_voice_link/          # MATLAB/Simulink 参考联合仿真脚本

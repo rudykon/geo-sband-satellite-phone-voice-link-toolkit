@@ -58,6 +58,10 @@ The figures below are committed under `expected_outputs/figures/all/` so they re
 directly on GitHub.
 
 <p align="center">
+  <img src="expected_outputs/figures/all/geo_s_band_d2c_voice_link_simulation_flow.png" alt="Low-tail GEO S-band voice-link screening workflow" width="900">
+</p>
+
+<p align="center">
   <img src="expected_outputs/figures/all/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening distort low-tail voice availability" width="760">
 </p>
 
@@ -84,6 +88,11 @@ directly on GitHub.
 ├── LICENSE
 ├── requirements.txt
 ├── run_all.py
+├── app.py
+├── examples/
+│   └── quick_start.ipynb
+├── docs/
+│   └── index.html
 ├── src/
 │   ├── tiantong_sband_link.py
 │   ├── outage_capacity_bound.py
@@ -103,6 +112,12 @@ Create a Python environment and install the required packages:
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
+```
+
+Launch the interactive dashboard:
+
+```bash
+streamlit run app.py
 ```
 
 Run the full reference workflow:
@@ -135,6 +150,16 @@ outputs/
 `outputs/` is intentionally ignored by Git. `archive/` is only for local legacy
 run artifacts. Reference CSV/PDF artifacts used by the paper are committed under
 `expected_outputs/`.
+
+## Interactive and Static Views
+
+- `app.py` provides a Streamlit dashboard for scenario selection, proxy-parameter
+  sliders, availability/baseline comparison, sensitivity ranking, and figure
+  viewing.
+- `examples/quick_start.ipynb` is a notebook workflow for researchers who want
+  to change proxy parameters and inspect tables in Python.
+- `docs/index.html` is a static GitHub Pages result page. Enable GitHub Pages
+  from the repository `docs/` folder to publish it.
 
 ## Expected Outputs
 
