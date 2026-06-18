@@ -1,9 +1,13 @@
-function modelName = step1_build_simulink_model(cfg)
+function [modelName, modelMode] = step1_build_simulink_model(cfg, strict)
 %STEP1_BUILD_SIMULINK_MODEL Generate the Step 1 system-level Simulink model.
 %
 % The generated model intentionally keeps equations in readable MATLAB files.
 % Simulink orchestrates the scenario index, sample count, random seed, and link
 % closure metrics to provide a system-level co-simulation artifact.
+
+if nargin < 2
+    strict = false;
+end
 
 modelName = "step1_geo_sband_link_system";
 modelFile = fullfile(fileparts(mfilename("fullpath")), modelName + ".slx");
@@ -24,11 +28,15 @@ add_block("simulink/Sources/Constant", modelName + "/n_mc", ...
     "Value", num2str(cfg.nMcVoice), "Position", [80 145 150 175]);
 add_block("simulink/Sources/Constant", modelName + "/seed", ...
     "Value", num2str(cfg.seed), "Position", [80 210 150 240]);
+add_block("simulink/Sources/Constant", modelName + "/voice_rate_bps", ...
+    "Value", num2str(cfg.voice.mainRateBps), "Position", [80 275 150 305]);
+add_block("simulink/Sources/Constant", modelName + "/threshold_ebn0_db", ...
+    "Value", num2str(cfg.voice.mainThresholdEbN0Db), "Position", [80 340 150 370]);
 
 add_block("simulink/Signal Routing/Mux", modelName + "/scenario_inputs", ...
-    "Inputs", "3", "Position", [215 105 245 220]);
+    "Inputs", "5", "Position", [215 105 245 350]);
 
-linkBlock = modelName + "/Step1 link closure";
+linkBlock = modelName + "/Paper1 link closure";
 forcePrecomputed = strcmp(getenv('STEP1_FORCE_PRECOMPUTED_SIMULINK'), '1');
 try
     if forcePrecomputed
@@ -39,6 +47,10 @@ try
     step1_configure_matlab_function_block(linkBlock);
     modelMode = 'matlab_function_block';
 catch blockErr
+    if strict
+        error("step1:strictSimulinkBlockRequired", ...
+            "Strict co-simulation requires a MATLAB Function block: %s", blockErr.message);
+    end
     warning("step1:simulinkBlockFallback", ...
         "Could not create a MATLAB Function block (%s). Falling back to a precomputed-metrics Simulink orchestration model.", ...
         blockErr.message);
@@ -56,9 +68,11 @@ add_block("simulink/Sinks/To Workspace", modelName + "/metrics_to_workspace", ..
 add_line(modelName, "scenario_index/1", "scenario_inputs/1", "autorouting", "on");
 add_line(modelName, "n_mc/1", "scenario_inputs/2", "autorouting", "on");
 add_line(modelName, "seed/1", "scenario_inputs/3", "autorouting", "on");
+add_line(modelName, "voice_rate_bps/1", "scenario_inputs/4", "autorouting", "on");
+add_line(modelName, "threshold_ebn0_db/1", "scenario_inputs/5", "autorouting", "on");
 if strcmp(modelMode, 'matlab_function_block')
-    add_line(modelName, "scenario_inputs/1", "Step1 link closure/1", "autorouting", "on");
-    add_line(modelName, "Step1 link closure/1", "metrics_to_workspace/1", "autorouting", "on");
+    add_line(modelName, "scenario_inputs/1", "Paper1 link closure/1", "autorouting", "on");
+    add_line(modelName, "Paper1 link closure/1", "metrics_to_workspace/1", "autorouting", "on");
 else
     add_line(modelName, "precomputed_metrics/1", "metrics_to_workspace/1", "autorouting", "on");
 end
@@ -95,7 +109,7 @@ chart.Script = sprintf([ ...
     'function y = fcn(u)\n' ...
     '%%#codegen\n' ...
     'coder.extrinsic(''step1_simulink_scenario'');\n' ...
-    'y = zeros(8,1);\n' ...
+    'y = zeros(9,1);\n' ...
     'y = step1_simulink_scenario(u);\n' ...
     'end\n']);
 end

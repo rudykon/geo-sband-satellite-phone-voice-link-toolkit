@@ -24,13 +24,20 @@ from matplotlib import font_manager
 import numpy as np
 from scipy.stats import norm
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "outputs" / "outage_capacity"
-PLOTS = ROOT / "outputs" / "plots"
+try:
+    from .paths import OUTAGE_CAPACITY_DIR, SHARED_FIGURES_DIR
+except ImportError:  # Allow direct execution from this directory during debugging.
+    from paths import OUTAGE_CAPACITY_DIR, SHARED_FIGURES_DIR
+
+OUT = OUTAGE_CAPACITY_DIR
+PLOTS = SHARED_FIGURES_DIR
 OUT.mkdir(parents=True, exist_ok=True)
 PLOTS.mkdir(parents=True, exist_ok=True)
 
 for fp in [
+    "C:/Windows/Fonts/msyh.ttc",
+    "C:/Windows/Fonts/simhei.ttf",
+    "C:/Windows/Fonts/simsun.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc",

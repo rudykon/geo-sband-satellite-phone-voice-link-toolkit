@@ -1,14 +1,14 @@
 function cfg = step1_params()
 %STEP1_PARAMS Shared Step 1 parameters for MATLAB/Simulink validation.
 
-thisDir = fileparts(mfilename("fullpath"));
-rootDir = fileparts(thisDir);
+paths = step1_paths();
+rootDir = paths.rootDir;
 
 cfg = struct();
 cfg.rootDir = rootDir;
-cfg.outputDir = fullfile(rootDir, "outputs", "matlab_step1");
-cfg.figureDir = fullfile(cfg.outputDir, "figures");
-cfg.step1PlotDir = fullfile(rootDir, "outputs", "step1_link", "plots");
+cfg.outputDir = paths.outputDir;
+cfg.figureDir = paths.figureDir;
+cfg.step1PlotDir = paths.step1PlotDir;
 cfg.seed = 20260608;
 
 cfg.nMcVoice = 200000;

@@ -2,19 +2,20 @@
 
 [中文说明](README.zh-CN.md)
 
-This repository is a standalone open-source research toolkit for Step 1 of a
-two-step satellite-phone direct-to-cell (D2C) service study. Step 1 focuses on
-GEO S-band voice-link closure in remote areas and provides the link-side
-baseline used by later service-layer work.
+This repository is a standalone open-source research toolkit for GEO S-band
+satellite-phone voice-link screening. It focuses on Step 1 of the broader
+research sequence: link closure, low-tail capacity, and voice-bearer
+availability in remote-area scenarios.
 
 The toolkit provides a public-parameter, vendor-neutral screening workflow for
 estimating whether a handheld satellite-phone style terminal can close a
 low-rate voice bearer under posture loss, shadowing, LOS/NLOS mixing, terrain
 blockage, and low-tail outage-capacity constraints.
 
-The repository is designed to be self-contained for GitHub release: the Python
-workflow regenerates the numerical tables and figures, and the optional
-MATLAB/Simulink workflow cross-checks selected Step 1 validation outputs.
+The repository is designed to be self-contained for GitHub release: Python
+orchestrates the workflow, MATLAB Communications Toolbox calibrates the PHY
+thresholds, Simulink runs the strict reference availability model, and Python
+promotes that table into the public CSV/JSON outputs.
 
 ## What This Toolkit Does
 
@@ -25,7 +26,8 @@ MATLAB/Simulink workflow cross-checks selected Step 1 validation outputs.
   model to expose low-tail risk.
 - Ranks sensitivity to NLOS loss, LOS probability, PA compression, rain loss,
   voice threshold, posture, shadowing, and residual Doppler.
-- Provides optional MATLAB/Simulink scripts for independent PHY/LMS validation.
+- Provides strict MATLAB/Simulink co-simulation scripts for reference
+  PHY-threshold availability, with LMS scripts retained as validation checks.
 
 This is not a proprietary handset implementation, field-test dataset, or vendor
 calibration package.
@@ -37,16 +39,16 @@ availability:
 
 | Scenario | Availability | P10 Eb/N0 |
 | --- | ---: | ---: |
-| Open plain | 100.0% | 19.46 dB |
-| Forest edge | 99.95% | 14.57 dB |
-| Canyon valley | 91.43% | 1.68 dB |
-| Moving trail | 79.88% | -2.93 dB |
-| Tent/shelter | 46.73% | -14.47 dB |
+| Open plain | 100.00% | 19.48 dB |
+| Forest edge | 99.29% | 14.67 dB |
+| Canyon valley | 84.31% | 1.65 dB |
+| Moving trail | 66.37% | -2.95 dB |
+| Tent/shelter | 36.07% | -14.48 dB |
 
-The average-SNR screen predicts 100% availability in all five scenarios, which
-overstates the low-tail result by up to 53.3 percentage points in the
-tent/shelter case. The largest tested sensitivity is NLOS excess loss, with a
-maximum availability swing of 15.46 percentage points.
+Average-SNR screening over-simplifies the decision boundary, and the
+single-state lognormal model overstates the tent/shelter result by 60.45
+percentage points. The largest tested sensitivity is NLOS excess loss, with a
+maximum availability swing of 15.69 percentage points.
 
 See [RESULTS.md](RESULTS.md) for the fuller result summary and pointers to the
 CSV/PNG/PDF artifacts under `expected_outputs/`.
@@ -57,7 +59,7 @@ The figures below are committed under `expected_outputs/plots/` so they render
 directly on GitHub.
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening overestimate low-tail voice availability" width="760">
+  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening distort low-tail voice availability" width="760">
 </p>
 
 <p align="center">
@@ -86,6 +88,7 @@ directly on GitHub.
 ├── src/
 │   ├── tiantong_sband_link.py
 │   ├── outage_capacity_bound.py
+│   ├── step1_cosim.py
 │   └── step1_completion.py
 ├── expected_outputs/
 │   ├── geo_satphone/
@@ -104,11 +107,17 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-Run the core Python workflow:
+Run the full reference workflow:
 
 ```bash
 python run_all.py
 ```
+
+This requires MATLAB, Simulink, and Communications Toolbox. MATLAB is detected
+from `MATLAB_EXE`, then `matlab` on `PATH`, then `D:\matlab\bin\matlab.exe`.
+`python run_all.py --skip-matlab-step1` is development-only. It runs the
+Python-only scripts and skips completion artifacts that require the
+MATLAB/Simulink reference outputs.
 
 The workflow writes newly generated artifacts to `outputs/`:
 
@@ -137,19 +146,22 @@ Important generated files include:
 - `outputs/plots/geo_satphone_c0p01_sensitivity_ranking.pdf`
 - `outputs/plots/geo_satphone_dwell_time_sensitivity.pdf`
 
-## Optional MATLAB/Simulink Validation
+## MATLAB/Simulink Co-Simulation
 
-The MATLAB workflow is optional. It requires MATLAB and Simulink; the reference
-PHY threshold calibration also requires Communications Toolbox.
+The MATLAB/Simulink workflow is required for reference outputs. It requires
+MATLAB, Simulink, and Communications Toolbox.
 
 From MATLAB:
 
 ```matlab
 cd("matlab_step1")
-run_step1_phy_lms_upgrade
+run_step1_cosim_strict("../outputs/matlab_step1/step1_cosim_input_manifest.json")
 ```
 
-Expected MATLAB outputs are written to `outputs/matlab_step1/`. See
+Normally `run_all.py` creates the manifest and invokes this entry point through
+`matlab.exe -batch`. Expected MATLAB staging outputs are written to
+`outputs/matlab_step1/`, and Python promotes canonical outputs to
+`outputs/geo_satphone/`. See
 [MATLAB_SIMULINK.md](MATLAB_SIMULINK.md) for details.
 
 ## Notes and Scope

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate completion artifacts for the two-step research sequence.
+"""Generate completion artifacts for the Step 1 open-source toolkit.
 
-The main simulation scripts produce the Step 1 link results. This
-module fills the review-driven gaps from the step-sequence revision plan with reproducible
+The main simulation scripts produce the baseline link results. This module
+fills the review-driven gaps from the step-sequence revision plan with reproducible
 CSV tables and manuscript figures:
 
 * residual S-band Doppler and rain-margin sensitivity for the 2.4 kbps bearer;
@@ -26,17 +26,22 @@ from matplotlib import font_manager
 from matplotlib.ticker import PercentFormatter
 import numpy as np
 
+try:
+    from .paths import GEO_SATPHONE_DIR, REQUESTED_EXTENSIONS_DIR, SHARED_FIGURES_DIR, STEP1_PLOTS_DIR
+except ImportError:  # Allow direct execution from this directory during debugging.
+    from paths import GEO_SATPHONE_DIR, REQUESTED_EXTENSIONS_DIR, SHARED_FIGURES_DIR, STEP1_PLOTS_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "outputs"
-PLOTS = OUT / "plots"
-GEO_OUT = OUT / "geo_satphone"
-STEP1_PLOTS = OUT / "step1_link" / "plots"
-REQUESTED_OUT = OUT / "requested_extensions"
+PLOTS = SHARED_FIGURES_DIR
+GEO_OUT = GEO_SATPHONE_DIR
+STEP1_PLOTS = STEP1_PLOTS_DIR
+REQUESTED_OUT = REQUESTED_EXTENSIONS_DIR
 for path in [PLOTS, GEO_OUT, STEP1_PLOTS, REQUESTED_OUT]:
     path.mkdir(parents=True, exist_ok=True)
 
 for fp in [
+    "C:/Windows/Fonts/msyh.ttc",
+    "C:/Windows/Fonts/simhei.ttf",
+    "C:/Windows/Fonts/simsun.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc",
@@ -137,6 +142,10 @@ APP_PROFILES = {
     "rich_1mbps": {"label": "1 Mbps rich stress", "rate_bps": 1_000_000.0},
 }
 
+REFERENCE_THRESHOLDS_DB: dict[float, float] = {}
+REFERENCE_AVAILABILITY: dict[tuple[str, float], dict[str, float]] = {}
+PYTHON_BASELINE_TOLERANCE = 0.02
+
 
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
     if not rows:
@@ -195,36 +204,9 @@ def orientation_gain_db(theta_deg: np.ndarray | float, g_peak_dbi: float = 2.0, 
     return np.maximum(-10.0, g_peak_dbi + gain_drop)
 
 
-def dl_snr_db(bw_hz: float, theta_deg: np.ndarray | float, eirp_sat_dbw: float = 54.0) -> np.ndarray:
-    eirp_dbm = eirp_sat_dbw + 30.0
-    rx_dbm = eirp_dbm + orientation_gain_db(theta_deg) - fspl_db(36000.0, 2185.0) - 0.5 - 0.3 - 1.0
-    return rx_dbm - noise_dbm(bw_hz, nf_db=4.0)
-
-
 def ul_snr_db(bw_hz: float, theta_deg: np.ndarray | float, pt_dbm: float = 34.0) -> np.ndarray:
     rx_dbm = pt_dbm + orientation_gain_db(theta_deg) + 40.0 - fspl_db(36000.0, 1995.0) - 0.5 - 1.0
     return rx_dbm - noise_dbm(bw_hz, nf_db=2.0)
-
-
-def capacity_bps(snr_db: np.ndarray, bw_hz: float, eta_mac: float = 0.55) -> np.ndarray:
-    return eta_mac * bw_hz * np.log2(1.0 + 10.0 ** (snr_db / 10.0))
-
-
-def sample_link_rates(
-    rng: np.random.Generator,
-    scenario_key: str,
-    n: int,
-    bw_dl_hz: float,
-    bw_ul_hz: float = 31.25e3,
-) -> tuple[np.ndarray, np.ndarray]:
-    sp = next(s for s in SCENARIOS if s["key"] == scenario_key)
-    theta = np.clip(rng.normal(float(sp["theta_mean"]), 7.0 + 0.35 * float(sp["theta_mean"]), n), 0.0, 80.0)
-    los = rng.random(n) < float(sp["p_los"])
-    shadow = rng.normal(0.0, float(sp["sigma_db"]), n)
-    nlos_loss = (~los) * float(sp["nlos_loss_db"])
-    dl = dl_snr_db(bw_dl_hz, theta) - shadow - nlos_loss
-    ul = ul_snr_db(bw_ul_hz, theta) - shadow - nlos_loss
-    return capacity_bps(dl, bw_dl_hz), capacity_bps(ul, bw_ul_hz)
 
 
 def exact_lognormal_capacity(gamma0_db: float, sigma_db: float, eps: float, added_loss_db: float = 0.0) -> float:
@@ -452,31 +434,24 @@ def generate_public_inverse_alignment() -> list[dict[str, object]]:
 
 
 def generate_voice_availability_band() -> list[dict[str, object]]:
-    path = GEO_OUT / "voice_threshold_sensitivity.csv"
-    if not path.exists():
-        return []
-    src_rows = read_csv(path)
+    samples = step1_common_random_samples()
     rows: list[dict[str, object]] = []
-    paper_map = {s["step1_key"]: s for s in SCENARIOS}
-    for scenario, sp in paper_map.items():
-        subset = [
-            r
-            for r in src_rows
-            if r["scenario"] == scenario and abs(float(r["voice_rate_bps"]) - 2400.0) < 1e-9
-        ]
-        if not subset:
-            continue
-        def availability_at(delta: float) -> float:
-            return float(next(r["availability"] for r in subset if abs(float(r["threshold_shift_db"]) - delta) < 1e-9))
-
+    for sp in STEP1_AVAILABILITY_SCENARIOS:
+        scenario = str(sp["key"])
+        sample = samples[scenario]
+        canonical = canonical_voice_metric(scenario, 2400.0)
+        minus_1, _, _ = step1_voice_availability(sp, sample, threshold_delta_db=-1.0)
+        plus_1, _, _ = step1_voice_availability(sp, sample, threshold_delta_db=1.0)
         rows.append(
             {
-                "scenario": sp["key"],
+                "scenario": sp.get("scenario_key", scenario),
+                "step1_key": scenario,
                 "scenario_label": sp["label"],
-                "availability_minus_1db": availability_at(-1.0),
-                "availability_baseline": availability_at(0.0),
-                "availability_plus_1db": availability_at(1.0),
-                "one_sigma_proxy": "threshold/posture calibration +/-1 dB",
+                "availability_minus_1db": minus_1,
+                "availability_baseline": canonical["availability"],
+                "availability_plus_1db": plus_1,
+                "threshold_ebn0_db": canonical["threshold_ebn0_db"],
+                "one_sigma_proxy": "PHY-threshold/posture calibration +/-1 dB",
             }
         )
     write_csv(GEO_OUT / "voice_availability_band.csv", rows)
@@ -484,8 +459,8 @@ def generate_voice_availability_band() -> list[dict[str, object]]:
     labels = [r["scenario_label"] for r in rows]
     x = np.arange(len(rows))
     baseline = np.array([float(r["availability_baseline"]) for r in rows])
-    lower = baseline - np.array([float(r["availability_plus_1db"]) for r in rows])
-    upper = np.array([float(r["availability_minus_1db"]) for r in rows]) - baseline
+    lower = np.maximum(0.0, baseline - np.array([float(r["availability_plus_1db"]) for r in rows]))
+    upper = np.maximum(0.0, np.array([float(r["availability_minus_1db"]) for r in rows]) - baseline)
     fig, ax = plt.subplots(figsize=(6.9, 3.55))
     ax.errorbar(
         x,
@@ -507,6 +482,36 @@ def generate_voice_availability_band() -> list[dict[str, object]]:
     return rows
 
 
+def generate_reference_voice_availability_plot() -> list[dict[str, object]]:
+    rows = read_csv(GEO_OUT / "voice_availability.csv")
+    scenarios = [str(sp["key"]) for sp in STEP1_AVAILABILITY_SCENARIOS]
+    labels = [str(sp["label"]) for sp in STEP1_AVAILABILITY_SCENARIOS]
+    rates = sorted(REFERENCE_THRESHOLDS_DB)
+    x = np.arange(len(scenarios))
+    width = 0.23
+    styles = {
+        1200.0: {"color": COLORS["accent"], "alpha": 1.0, "hatch": "", "edgecolor": "none"},
+        2400.0: {"color": COLORS["exact"], "alpha": 1.0, "hatch": "", "edgecolor": "none"},
+        4000.0: {"color": "#BDBDBD", "alpha": 0.65, "hatch": "//", "edgecolor": "#666666"},
+    }
+    fig, ax = plt.subplots(figsize=(7.2, 3.9))
+    for i, rb in enumerate(rates):
+        vals = [
+            next(float(r["availability"]) for r in rows if r["scenario"] == sc and abs(float(r["voice_rate_bps"]) - rb) < 1e-9)
+            for sc in scenarios
+        ]
+        ax.bar(x + (i - 1) * width, vals, width, label=f"{rb/1000:.1f} kbps", **styles.get(rb, {}))
+    ax.set_xticks(x, labels, rotation=18, ha="right")
+    ax.set_ylim(0, 1.05)
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
+    ax.set_ylabel("Voice availability")
+    ax.set_title("PHY-calibrated MATLAB/Simulink voice availability")
+    polish_axes(ax)
+    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, 1.18), borderaxespad=0.0)
+    save_plot(fig, "geo_satphone_voice_availability", paper_dir=STEP1_PLOTS)
+    return rows
+
+
 STEP1_AVAILABILITY_SCENARIOS = [
     {"key": "open", "label": "Open plain", "sigma_db": 2.5, "theta_mean": 8.0, "theta_std": 5.0, "extra_nlos_db": 8.0},
     {"key": "suburban", "label": "Forest edge", "sigma_db": 4.0, "theta_mean": 13.0, "theta_std": 8.0, "extra_nlos_db": 12.0},
@@ -514,6 +519,80 @@ STEP1_AVAILABILITY_SCENARIOS = [
     {"key": "car", "label": "Moving trail", "sigma_db": 6.0, "theta_mean": 25.0, "theta_std": 14.0, "extra_nlos_db": 20.0},
     {"key": "indoor_window", "label": "Tent/shelter", "sigma_db": 9.0, "theta_mean": 30.0, "theta_std": 16.0, "extra_nlos_db": 26.0},
 ]
+
+
+def configure_step1_reference_inputs() -> None:
+    baseline_path = GEO_OUT / "step1_service_baseline.json"
+    availability_path = GEO_OUT / "voice_availability.csv"
+    if not baseline_path.exists():
+        raise SystemExit(f"Missing Step 1 reference service baseline: {baseline_path}")
+    if not availability_path.exists():
+        raise SystemExit(f"Missing Step 1 reference availability CSV: {availability_path}")
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    if baseline.get("authoritative") is not True or baseline.get("source") != "matlab_simulink_phy_threshold":
+        raise SystemExit("Step 1 service baseline is not from the MATLAB/Simulink reference path.")
+
+    global SCENARIOS, STEP1_AVAILABILITY_SCENARIOS, REFERENCE_THRESHOLDS_DB, REFERENCE_AVAILABILITY
+    REFERENCE_THRESHOLDS_DB = {float(k): float(v) for k, v in baseline["thresholds"].items()}
+
+    configured_scenarios: list[dict[str, object]] = []
+    configured_availability_scenarios: list[dict[str, object]] = []
+    for sc in baseline["scenarios"]:
+        scenario = {
+            "key": str(sc["scenario_key"]),
+            "step1_key": str(sc["step1_key"]),
+            "label": str(sc["label"]),
+            "p_los": float(sc["p_los"]),
+            "sigma_db": float(sc["sigma_db"]),
+            "theta_mean": float(sc["theta_mean_deg"]),
+            "theta_std": float(sc["theta_std_deg"]),
+            "nlos_loss_db": float(sc["nlos_loss_db"]),
+            "p_ll": float(sc["p_ll"]),
+            "dwell_class": "MATLAB/Simulink co-sim inherited scenario",
+        }
+        configured_scenarios.append(scenario)
+        configured_availability_scenarios.append(
+            {
+                "key": scenario["step1_key"],
+                "scenario_key": scenario["key"],
+                "label": scenario["label"],
+                "p_los": scenario["p_los"],
+                "sigma_db": scenario["sigma_db"],
+                "theta_mean": scenario["theta_mean"],
+                "theta_std": scenario["theta_std"],
+                "extra_nlos_db": scenario["nlos_loss_db"],
+            }
+        )
+    SCENARIOS = configured_scenarios
+    STEP1_AVAILABILITY_SCENARIOS = configured_availability_scenarios
+
+    REFERENCE_AVAILABILITY = {}
+    for row in read_csv(availability_path):
+        key = (row["scenario"], float(row["voice_rate_bps"]))
+        REFERENCE_AVAILABILITY[key] = {
+            "availability": float(row["availability"]),
+            "p10_ebn0_db": float(row["p10_ebn0_db"]),
+            "median_ebn0_db": float(row["median_ebn0_db"]),
+            "threshold_ebn0_db": float(row["threshold_ebn0_db"]),
+        }
+
+    expected = {(str(s["key"]), rate) for s in STEP1_AVAILABILITY_SCENARIOS for rate in REFERENCE_THRESHOLDS_DB}
+    missing = sorted(expected - set(REFERENCE_AVAILABILITY))
+    if missing:
+        raise SystemExit(f"Step 1 reference availability table is missing rows: {missing}")
+
+
+def voice_threshold_db(rate_bps: float) -> float:
+    if rate_bps not in REFERENCE_THRESHOLDS_DB:
+        raise SystemExit(f"Missing reference PHY threshold for {rate_bps} bps")
+    return REFERENCE_THRESHOLDS_DB[rate_bps]
+
+
+def canonical_voice_metric(step1_key: str, rate_bps: float = 2400.0) -> dict[str, float]:
+    key = (step1_key, rate_bps)
+    if key not in REFERENCE_AVAILABILITY:
+        raise SystemExit(f"Missing canonical voice metric for {step1_key} at {rate_bps} bps")
+    return REFERENCE_AVAILABILITY[key]
 
 
 def step1_plos_elevation(elev_deg: float, scenario: str) -> float:
@@ -589,7 +668,7 @@ def step1_link_samples(
     if force_single_state:
         nlos_loss = 0.0
     else:
-        p_los = step1_plos_elevation(45.0, str(sp["key"]))
+        p_los = float(sp.get("p_los", step1_plos_elevation(45.0, str(sp["key"]))))
         p_los = float(np.clip(p_los + p_los_delta, 0.01, 0.99))
         los_state = sample["los_uniform"] < p_los
         nlos_loss = (~los_state) * max(0.0, float(sp["extra_nlos_db"]) + nlos_delta_db)
@@ -620,7 +699,7 @@ def step1_voice_link_metrics(
         added_loss_db=added_loss_db,
         force_single_state=force_single_state,
     )
-    threshold_db = 0.7 + threshold_delta_db
+    threshold_db = voice_threshold_db(2400.0) + threshold_delta_db
     capacity = np.log2(1.0 + 10.0 ** (snr_db / 10.0))
     return {
         "availability": float(np.mean(ebn0 >= threshold_db)),
@@ -635,13 +714,20 @@ def generate_screening_baseline_comparison(seed: int = 20260608, n_mc: int = 200
     rows: list[dict[str, object]] = []
     bw_hz = 31.25e3
     rb_bps = 2400.0
-    threshold_db = 0.7
+    threshold_db = voice_threshold_db(rb_bps)
     for sp in STEP1_AVAILABILITY_SCENARIOS:
         key = str(sp["key"])
         sample = samples[key]
-        proposed, p10_ebn0_db, median_ebn0_db = step1_voice_availability(sp, sample)
+        python_proposed, _, _ = step1_voice_availability(sp, sample)
+        canonical = canonical_voice_metric(key, rb_bps)
+        proposed = canonical["availability"]
         single_state, _, _ = step1_voice_availability(sp, sample, force_single_state=True)
-        p_los = step1_plos_elevation(45.0, key)
+        if abs(python_proposed - proposed) > PYTHON_BASELINE_TOLERANCE:
+            raise SystemExit(
+                f"Python baseline differs from MATLAB/Simulink canonical for {key}: "
+                f"{python_proposed:.6f} vs {proposed:.6f}"
+            )
+        p_los = float(sp.get("p_los", step1_plos_elevation(45.0, key)))
         avg_ebn0 = (
             float(ul_snr_db(bw_hz, float(sp["theta_mean"])))
             - (1.0 - p_los) * float(sp["extra_nlos_db"])
@@ -658,8 +744,8 @@ def generate_screening_baseline_comparison(seed: int = 20260608, n_mc: int = 200
                 "proposed_mixture_availability": proposed,
                 "average_minus_proposed_pp": 100.0 * (average_snr - proposed),
                 "single_state_minus_proposed_pp": 100.0 * (single_state - proposed),
-                "p10_ebn0_db": p10_ebn0_db,
-                "median_ebn0_db": median_ebn0_db,
+                "p10_ebn0_db": canonical["p10_ebn0_db"],
+                "median_ebn0_db": canonical["median_ebn0_db"],
             }
         )
     write_csv(GEO_OUT / "screening_baseline_comparison.csv", rows)
@@ -674,10 +760,17 @@ def generate_screening_baseline_comparison(seed: int = 20260608, n_mc: int = 200
     ax.set_xticks(x, labels, rotation=18, ha="right")
     ax.set_ylabel("2.4 kbps availability (%)")
     ax.set_ylim(0, 105)
-    ax.set_title("Average-SNR and single-state screening overestimate low-tail availability")
+    ax.set_title("Average-SNR and single-state screening distort low-tail availability", pad=24)
     polish_axes(ax)
-    ax.legend(frameon=False, ncol=3, loc="lower left")
-    save_plot(fig, "geo_satphone_screening_baseline_comparison", paper_dir=STEP1_PLOTS)
+    ax.legend(
+        frameon=False,
+        ncol=3,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 1.005),
+        borderaxespad=0.0,
+    )
+    fig.subplots_adjust(top=0.78, bottom=0.26)
+    save_plot(fig, "geo_satphone_screening_baseline_comparison", paper_dir=STEP1_PLOTS, tight=False)
     return rows
 
 
@@ -687,6 +780,14 @@ def generate_screening_sensitivity_ranking(seed: int = 20260608, n_mc: int = 200
         str(sp["key"]): step1_voice_link_metrics(sp, samples[str(sp["key"])])
         for sp in STEP1_AVAILABILITY_SCENARIOS
     }
+    for key in list(base):
+        canonical = canonical_voice_metric(key, 2400.0)
+        if abs(float(base[key]["availability"]) - canonical["availability"]) > PYTHON_BASELINE_TOLERANCE:
+            raise SystemExit(
+                f"Python sensitivity baseline differs from MATLAB/Simulink canonical for {key}: "
+                f"{base[key]['availability']:.6f} vs {canonical['availability']:.6f}"
+            )
+        base[key]["availability"] = canonical["availability"]
     tracked_doppler_loss_db = -20.0 * math.log10(max(abs(np.sinc(100.0 * 0.001)), 1e-6))
     specs = [
         ("NLOS excess loss", "+/-5 dB", [{"nlos_delta_db": 5.0}, {"nlos_delta_db": -5.0}]),
@@ -839,7 +940,6 @@ def generate_dwell_time_sensitivity(seed: int = 20260608, frames: int = 15_000) 
     return rows
 
 
-
 def copy_manuscript_plot_set() -> None:
     step1_stems = [
         "geo_s_band_d2c_voice_link_simulation_flow",
@@ -865,12 +965,13 @@ def copy_manuscript_plot_set() -> None:
     for stem in step1_stems:
         copy_to_paper_plots(stem, STEP1_PLOTS)
 
-
 def main() -> None:
+    configure_step1_reference_inputs()
     artifacts = {
         "doppler_rain": generate_doppler_rain(),
         "markov_alignment": generate_markov_alignment(),
         "public_inverse_alignment": generate_public_inverse_alignment(),
+        "reference_voice_availability": generate_reference_voice_availability_plot(),
         "voice_availability_band": generate_voice_availability_band(),
         "screening_baseline_comparison": generate_screening_baseline_comparison(),
         "screening_sensitivity_ranking": generate_screening_sensitivity_ranking(),

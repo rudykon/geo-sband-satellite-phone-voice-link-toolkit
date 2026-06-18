@@ -22,6 +22,7 @@ snrDb = snrDetDb - shadowDb - double(~los) .* sc.nlos_loss_db;
 ebn0Db = snrDb + 10.0 * log10(cfg.link.bandwidthHz / rateBps);
 
 ok = ebn0Db >= thresholdEbN0Db;
+mos = 1.2 + 2.4 ./ (1.0 + exp(-(ebn0Db - thresholdEbN0Db) ./ 1.8));
 
 metrics = struct();
 metrics.scenario_key = sc.scenario_key;
@@ -40,4 +41,5 @@ metrics.p10_ebn0_db = step1_empirical_quantile(ebn0Db, 0.10);
 metrics.median_ebn0_db = step1_empirical_quantile(ebn0Db, 0.50);
 metrics.mean_ebn0_db = mean(ebn0Db);
 metrics.std_ebn0_db = std(ebn0Db);
+metrics.mean_mos_proxy = mean(min(max(mos, 1.0), 4.0));
 end

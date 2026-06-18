@@ -21,13 +21,20 @@ from matplotlib.patches import Arc, Circle, FancyArrowPatch, Polygon, Rectangle
 import numpy as np
 from scipy.special import erfc
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "outputs" / "geo_satphone"
-PLOTS = ROOT / "outputs" / "plots"
+try:
+    from .paths import GEO_SATPHONE_DIR, SHARED_FIGURES_DIR
+except ImportError:  # Allow direct execution from this directory during debugging.
+    from paths import GEO_SATPHONE_DIR, SHARED_FIGURES_DIR
+
+OUT = GEO_SATPHONE_DIR
+PLOTS = SHARED_FIGURES_DIR
 OUT.mkdir(parents=True, exist_ok=True)
 PLOTS.mkdir(parents=True, exist_ok=True)
 
 for fp in [
+    "C:/Windows/Fonts/msyh.ttc",
+    "C:/Windows/Fonts/simhei.ttf",
+    "C:/Windows/Fonts/simsun.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
     "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc",
@@ -369,7 +376,7 @@ def run(seed: int = 20260608, n_mc: int = 200_000) -> None:
         "voice_threshold_sensitivity": threshold_sensitivity_rows,
         "urban_ablation": ablation_rows,
         "notes": [
-            "No vendor-specific implementation is modeled; this is a generic GEO S-band satellite-phone scenario approximation.",
+            "No vendor-specific implementation is reproduced; this is a generic GEO S-band satellite-phone scenario approximation.",
             "DSSS is treated as a comparison baseline; the main bearer is narrowband voice.",
         ],
     }, ensure_ascii=False, indent=2), encoding="utf-8")

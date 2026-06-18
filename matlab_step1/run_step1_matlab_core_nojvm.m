@@ -2,10 +2,10 @@
 %
 % R2026a on this workstation may crash in the home/recent-artifacts service
 % when batch mode initializes JVM-backed services. This runner avoids table,
-% string, graphics, and Simulink APIs so the Step 1 numerical cross-check can
+% string, graphics, and Simulink APIs so the Step 1 legacy numerical check can
 % still be executed from:
 %
-%   matlab -nojvm -batch "cd('C:\tmp\matlab_step1_run\matlab_step1'); run_step1_matlab_core_nojvm"
+%   matlab -nojvm -batch "cd('...\matlab_step1'); run_step1_matlab_core_nojvm"
 
 clear; clc;
 

@@ -1,0 +1,30 @@
+{
+  "authoritative": true,
+  "manifest_sha256": "d9ed9f8b12b1293be74460e54642d02cddb99e340b87c1d9879c9579e55add23",
+  "matlab_status": {
+    "authoritative_source": "matlab_simulink_phy_threshold",
+    "manifest_path": "outputs/matlab_step1/step1_cosim_input_manifest.json",
+    "matlab_root": "<matlab-root>",
+    "matlab_version": "26.1.0.3203278 (R2026a)",
+    "max_simulink_minus_matlab_availability": 5.000000000032756e-06,
+    "output_dir": "outputs/matlab_step1",
+    "scenarios": 5,
+    "simulink_mode": "matlab_function_block",
+    "simulink_model": "matlab_step1/step1_geo_sband_link_system.slx",
+    "status": "completed",
+    "strict_simulink": true,
+    "task": "Step 1 Python-MATLAB/Simulink reference co-simulation",
+    "threshold_rows": 3,
+    "toolboxes": {
+      "communications_toolbox": true,
+      "simulink": true
+    },
+    "voice_rates": 3,
+    "voice_rows": 15
+  },
+  "promoted_files": {
+    "service_baseline": "outputs/geo_satphone/step1_service_baseline.json",
+    "voice_availability": "outputs/geo_satphone/voice_availability.csv"
+  },
+  "source": "matlab_simulink_phy_threshold"
+}
