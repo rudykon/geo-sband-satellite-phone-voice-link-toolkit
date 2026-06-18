@@ -174,7 +174,7 @@ figs = figure_paths(
 gallery_cols = st.columns(2)
 for idx, (name, path) in enumerate(figs.items()):
     with gallery_cols[idx % 2]:
-        st.image(str(path), caption=name.replace("_", " ").replace(".png", ""), use_container_width=True)
+        st.image(str(path), caption=name.replace("_", " ").replace(".png", ""), use_column_width=True)
 
 with st.expander("Output layout"):
     st.markdown(
