@@ -86,6 +86,14 @@ CSV/PNG/PDF artifacts under `expected_outputs/`.
 The figures below are committed under `expected_outputs/figures/all/` so they render
 directly on GitHub.
 
+Reference Python--MATLAB/Simulink co-simulation path:
+
+<p align="center">
+  <img src="expected_outputs/figures/all/step1_python_matlab_simulink_cosimulation_imagegen.png" alt="Strict Python-MATLAB-Simulink co-simulation workflow for Step 1 reference outputs" width="900">
+</p>
+
+Low-tail screening workflow:
+
 <p align="center">
   <img src="expected_outputs/figures/all/geo_s_band_d2c_voice_link_simulation_flow.png" alt="Low-tail GEO S-band voice-link screening workflow" width="900">
 </p>

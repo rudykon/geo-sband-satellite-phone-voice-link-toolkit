@@ -61,6 +61,14 @@ streamlit run app.py
 
 以下图片已提交到 `expected_outputs/figures/all/`，可以在 GitHub README 中直接显示。
 
+Python--MATLAB/Simulink 参考联合仿真路径：
+
+<p align="center">
+  <img src="expected_outputs/figures/all/step1_python_matlab_simulink_cosimulation_imagegen.png" alt="Step 1 参考结果的 Python-MATLAB-Simulink 联合仿真流程" width="900">
+</p>
+
+低尾链路筛选工作流：
+
 <p align="center">
   <img src="expected_outputs/figures/all/geo_s_band_d2c_voice_link_simulation_flow.png" alt="GEO S-band 语音链路低尾筛选工作流" width="900">
 </p>
