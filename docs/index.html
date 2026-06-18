@@ -277,8 +277,12 @@
 
     <section>
       <h2>How to Use It</h2>
+      <p>Run the lightweight command-line screen:</p>
+      <pre><code>pip install -r requirements-lite.txt
+python quick_run.py
+python quick_run.py --scenario canyon --added-loss-db 2</code></pre>
       <p>Run the interactive dashboard locally:</p>
-      <pre><code>pip install -r requirements.txt
+      <pre><code>pip install -r requirements-dashboard.txt
 streamlit run app.py</code></pre>
       <p>Run the Python-only command-line workflow:</p>
       <pre><code>python run_all.py --skip-reference-cosim</code></pre>

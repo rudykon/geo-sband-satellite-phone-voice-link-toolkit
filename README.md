@@ -16,6 +16,35 @@ orchestrates the workflow, MATLAB Communications Toolbox calibrates the PHY
 thresholds, Simulink runs the strict reference availability model, and Python
 promotes that table into the public CSV/JSON outputs.
 
+## Easiest Ways to Use It
+
+You do not need MATLAB/Simulink for the normal engineering-facing entry points.
+Use the full reference path only when you want to regenerate the promoted
+reference tables from scratch.
+
+| Goal | Easiest command | Output |
+| --- | --- | --- |
+| Read the released results | Open `README.md`, `RESULTS.md`, or `docs/index.html` | Figures, result tables, CSV links |
+| Run a quick Python screen | `python quick_run.py` | `outputs/quick_run/quick_summary.*` |
+| Test one scenario | `python quick_run.py --scenario canyon --added-loss-db 2` | Console table plus quick report |
+| Open the visual dashboard | Windows: double-click `start_dashboard.bat` or run `streamlit run app.py` | Browser UI with sliders and plots |
+| Change parameters in a notebook | Open `examples/quick_start.ipynb` | Editable research workflow |
+| Regenerate full reference outputs | `python run_all.py` | MATLAB/Simulink-backed reference outputs |
+
+For a minimal command-line setup:
+
+```bash
+python -m pip install -r requirements-lite.txt
+python quick_run.py
+```
+
+For the dashboard:
+
+```bash
+python -m pip install -r requirements-dashboard.txt
+streamlit run app.py
+```
+
 ## What This Toolkit Does
 
 - Builds a generic GEO S-band satellite-phone voice-link approximation.
@@ -87,6 +116,11 @@ directly on GitHub.
 ├── PUBLIC_RELEASE.md
 ├── LICENSE
 ├── requirements.txt
+├── requirements-lite.txt
+├── requirements-dashboard.txt
+├── quick_run.py
+├── quick_run.bat
+├── start_dashboard.bat
 ├── run_all.py
 ├── app.py
 ├── examples/
@@ -104,9 +138,9 @@ directly on GitHub.
 └── matlab_voice_link/
 ```
 
-## Quick Start
+## Full Installation
 
-Create a Python environment and install the required packages:
+Create a Python environment and install the full set of optional packages:
 
 ```bash
 python -m venv .venv
@@ -114,13 +148,7 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-Launch the interactive dashboard:
-
-```bash
-streamlit run app.py
-```
-
-Run the full reference workflow:
+Then run the full reference workflow:
 
 ```bash
 python run_all.py
@@ -136,6 +164,7 @@ The workflow writes newly generated artifacts to `outputs/`:
 
 ```text
 outputs/
+├── quick_run/
 ├── data/
 │   ├── voice_link/
 │   ├── outage_capacity/
@@ -165,6 +194,8 @@ run artifacts. Reference CSV/PDF artifacts used by the paper are committed under
 
 Important generated files include:
 
+- `outputs/quick_run/quick_summary.csv`
+- `outputs/quick_run/quick_summary.md`
 - `outputs/data/voice_link/voice_availability.csv`
 - `outputs/data/voice_link/screening_baseline_comparison.csv`
 - `outputs/data/voice_link/screening_sensitivity_ranking.csv`

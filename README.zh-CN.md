@@ -6,6 +6,33 @@
 
 本项目的落点是 GEO S-band 卫星手机语音链路筛选：给出链路闭合、低尾容量、语音 bearer 可用性和 MATLAB/Simulink 参考联合仿真的可运行工具。
 
+## 最简单的使用方式
+
+普通工程使用不需要 MATLAB/Simulink。只有当你要从头重新生成参考表格时，才需要进入完整 MATLAB/Simulink 参考流程。
+
+| 目标 | 最简单入口 | 产物 |
+| --- | --- | --- |
+| 直接看公开结果 | 打开 `README.zh-CN.md`、`RESULTS.md` 或 `docs/index.html` | 图、表、CSV 链接 |
+| 快速跑一次链路筛选 | `python quick_run.py` | `outputs/quick_run/quick_summary.*` |
+| 测一个场景 | `python quick_run.py --scenario canyon --added-loss-db 2` | 终端表格和 quick report |
+| 打开可视化界面 | Windows 双击 `start_dashboard.bat`，或运行 `streamlit run app.py` | 浏览器里的滑块、图和表 |
+| 自己改参数做实验 | 打开 `examples/quick_start.ipynb` | 可编辑 notebook |
+| 完整重新生成参考结果 | `python run_all.py` | MATLAB/Simulink 支撑的参考输出 |
+
+最小命令行安装：
+
+```bash
+python -m pip install -r requirements-lite.txt
+python quick_run.py
+```
+
+启动 dashboard：
+
+```bash
+python -m pip install -r requirements-dashboard.txt
+streamlit run app.py
+```
+
 ## 这个项目能做什么
 
 - 计算 GEO S-band 卫星手机窄带语音链路预算。
@@ -54,20 +81,14 @@
   <img src="expected_outputs/figures/all/outage_capacity_scenarios.png" alt="LOS/NLOS 混合惩罚下的中断容量对比" width="760">
 </p>
 
-## 快速开始
+## 完整安装
 
-创建 Python 环境并安装依赖：
+创建 Python 环境并安装完整可选依赖：
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
-```
-
-启动交互式 dashboard：
-
-```bash
-streamlit run app.py
 ```
 
 运行完整参考主流程：
@@ -85,6 +106,7 @@ python run_all.py
 
 ```text
 outputs/
+├── quick_run/
 ├── data/
 │   ├── voice_link/
 │   ├── outage_capacity/
@@ -112,8 +134,13 @@ outputs/
 ├── README.zh-CN.md        # 中文说明
 ├── RESULTS.md             # 结果摘要
 ├── PUBLIC_RELEASE.md      # 开源发布说明
-├── requirements.txt       # Python 依赖
-├── run_all.py             # 主入口
+├── requirements-lite.txt  # quick_run 最小依赖
+├── requirements-dashboard.txt
+├── requirements.txt       # 完整可选依赖
+├── quick_run.py           # 最简单命令行入口
+├── quick_run.bat          # Windows 双击快速报告
+├── start_dashboard.bat    # Windows 双击 dashboard
+├── run_all.py             # 完整参考流程入口
 ├── app.py                 # Streamlit dashboard
 ├── examples/              # Notebook 示例
 ├── docs/                  # GitHub Pages 静态页

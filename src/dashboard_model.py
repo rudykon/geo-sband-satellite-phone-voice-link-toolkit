@@ -190,24 +190,39 @@ def sensitivity_rows(
     *,
     voice_rate_bps: float = 2400.0,
     n_samples: int = 60_000,
+    base_kwargs: dict[str, float] | None = None,
 ) -> list[dict[str, float | str]]:
-    base = evaluate_voice_link(scenario, voice_rate_bps=voice_rate_bps, n_samples=n_samples)
+    base_kwargs = dict(base_kwargs or {})
+    p_los = float(base_kwargs.get("p_los", float(scenario["p_los"])))
+    nlos_loss_db = float(base_kwargs.get("nlos_loss_db", float(scenario["nlos_loss_db"])))
+    sigma_db = float(base_kwargs.get("sigma_db", float(scenario["sigma_db"])))
+    theta_shift = float(base_kwargs.get("theta_mean_shift_deg", 0.0))
+    added_loss_db = float(base_kwargs.get("added_loss_db", 0.0))
+    threshold_delta_db = float(base_kwargs.get("threshold_delta_db", 0.0))
+
+    base = evaluate_voice_link(
+        scenario,
+        voice_rate_bps=voice_rate_bps,
+        n_samples=n_samples,
+        **base_kwargs,
+    )
     specs = [
-        ("NLOS excess loss", "+5 dB", {"nlos_loss_db": float(scenario["nlos_loss_db"]) + 5.0}),
-        ("LOS probability", "-0.10", {"p_los": float(scenario["p_los"]) - 0.10}),
-        ("Shadowing sigma", "+2 dB", {"sigma_db": float(scenario["sigma_db"]) + 2.0}),
-        ("Posture angle", "+10 deg", {"theta_mean_shift_deg": 10.0}),
-        ("Voice threshold", "+2 dB", {"threshold_delta_db": 2.0}),
-        ("Rain/atmospheric loss", "+2 dB", {"added_loss_db": 2.0}),
-        ("PA compression loss", "+3 dB", {"added_loss_db": 3.0}),
+        ("NLOS excess loss", "+5 dB", {"nlos_loss_db": nlos_loss_db + 5.0}),
+        ("LOS probability", "-0.10", {"p_los": p_los - 0.10}),
+        ("Shadowing sigma", "+2 dB", {"sigma_db": sigma_db + 2.0}),
+        ("Posture angle", "+10 deg", {"theta_mean_shift_deg": theta_shift + 10.0}),
+        ("Voice threshold", "+2 dB", {"threshold_delta_db": threshold_delta_db + 2.0}),
+        ("Rain/atmospheric loss", "+2 dB", {"added_loss_db": added_loss_db + 2.0}),
+        ("PA compression loss", "+3 dB", {"added_loss_db": added_loss_db + 3.0}),
     ]
     rows: list[dict[str, float | str]] = []
     for parameter, perturbation, kwargs in specs:
+        stressed_kwargs = {**base_kwargs, **kwargs}
         stressed = evaluate_voice_link(
             scenario,
             voice_rate_bps=voice_rate_bps,
             n_samples=n_samples,
-            **kwargs,
+            **stressed_kwargs,
         )
         rows.append(
             {

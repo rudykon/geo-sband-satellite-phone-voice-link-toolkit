@@ -54,7 +54,8 @@ def metric_delta_pp(value: float) -> str:
 st.title("GEO S-band Satellite Phone Voice-Link Screening")
 st.caption(
     "Interactive scenario exploration for low-rate voice-bearer availability, "
-    "low-tail Eb/N0, outage-capacity screening, and baseline distortion checks."
+    "low-tail Eb/N0, outage-capacity screening, and baseline distortion checks. "
+    "This dashboard uses the public reference snapshot and does not require MATLAB."
 )
 
 scenarios = cached_scenarios()
@@ -106,7 +107,7 @@ cols[4].metric("Avg-SNR margin", f"{result['average_snr_margin_db']:.2f} dB")
 
 if baseline_availability is not None:
     st.caption(
-        f"Reference 2.4 kbps MATLAB/Simulink availability for {selected_label}: "
+        f"Reference 2.4 kbps co-simulation availability for {selected_label}: "
         f"{100.0 * baseline_availability:.2f}%."
     )
 

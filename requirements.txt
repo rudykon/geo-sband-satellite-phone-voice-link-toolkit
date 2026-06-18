@@ -1,6 +1,4 @@
+-r requirements-dashboard.txt
 jupyter
 matplotlib
-numpy
-pandas
 scipy
-streamlit
