@@ -108,13 +108,13 @@ availability model over 1.2/2.4/4.0 kbps, and Python promotes the result to
 Reference file:
 
 ```text
-expected_outputs/matlab_step1/voice_threshold_from_phy.csv
-expected_outputs/matlab_step1/simulink_voice_availability.csv
+expected_outputs/matlab_voice_link/voice_threshold_from_phy.csv
+expected_outputs/matlab_voice_link/simulink_voice_availability.csv
 expected_outputs/geo_satphone/voice_availability_provenance.json
 ```
 
 Interpretation: strict Simulink output, not the legacy Python proxy, is the
-reference Step 1 voice availability source.
+reference voice-link voice availability source.
 
 ## Reference Figures
 

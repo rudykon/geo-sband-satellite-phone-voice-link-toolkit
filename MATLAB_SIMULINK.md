@@ -1,6 +1,6 @@
 # MATLAB/Simulink 参考联合仿真
 
-`matlab_step1/` 下的 MATLAB/Simulink 文件用于生成 Step 1 参考主可用性结果。Python 负责写入 input manifest、调用 MATLAB batch、校验 staging 输出并提升 canonical CSV/JSON。
+`matlab_voice_link/` 下的 MATLAB/Simulink 文件用于生成语音链路参考可用性结果。Python 负责写入 input manifest、调用 MATLAB batch、校验 staging 输出并提升 canonical CSV/JSON。
 
 推荐从仓库根目录运行：
 
@@ -13,17 +13,17 @@ python run_all.py
 MATLAB 严格入口为：
 
 ```matlab
-cd("matlab_step1")
-run_step1_cosim_strict("../outputs/matlab_step1/step1_cosim_input_manifest.json")
+cd("matlab_voice_link")
+run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
 ```
 
 预期生成文件包括：
 
-- `outputs/matlab_step1/voice_threshold_from_phy.csv`
-- `outputs/matlab_step1/simulink_voice_availability.csv`
-- `outputs/matlab_step1/step1_cosim_status.json`
+- `outputs/matlab_voice_link/voice_threshold_from_phy.csv`
+- `outputs/matlab_voice_link/simulink_voice_availability.csv`
+- `outputs/matlab_voice_link/voice_link_cosim_status.json`
 - `outputs/geo_satphone/voice_availability.csv`
-- `outputs/geo_satphone/step1_service_baseline.json`
+- `outputs/geo_satphone/voice_link_reference_baseline.json`
 - `outputs/geo_satphone/voice_availability_provenance.json`
 
-`run_step1_phy_lms_upgrade` 和 LMS 相关脚本仍可用于附加信道验证，但不能替代 strict co-simulation 主路径。`--skip-matlab-step1` 仅用于 Python-only 开发调试，不会生成完整参考结果。
+`run_phy_lms_alignment` 和 LMS 相关脚本仍可用于附加信道验证，但不能替代 strict co-simulation 主路径。`--skip-reference-cosim` 仅用于 Python-only 开发调试，不会生成完整参考结果。

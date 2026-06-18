@@ -3,9 +3,8 @@
 [中文说明](README.zh-CN.md)
 
 This repository is a standalone open-source research toolkit for GEO S-band
-satellite-phone voice-link screening. It focuses on Step 1 of the broader
-research sequence: link closure, low-tail capacity, and voice-bearer
-availability in remote-area scenarios.
+satellite-phone voice-link screening. It estimates link closure, low-tail
+capacity, and voice-bearer availability in remote-area scenarios.
 
 The toolkit provides a public-parameter, vendor-neutral screening workflow for
 estimating whether a handheld satellite-phone style terminal can close a
@@ -88,13 +87,13 @@ directly on GitHub.
 ├── src/
 │   ├── tiantong_sband_link.py
 │   ├── outage_capacity_bound.py
-│   ├── step1_cosim.py
-│   └── step1_completion.py
+│   ├── voice_link_reference.py
+│   └── screening_analysis.py
 ├── expected_outputs/
 │   ├── geo_satphone/
-│   ├── matlab_step1/
+│   ├── matlab_voice_link/
 │   └── plots/
-└── matlab_step1/
+└── matlab_voice_link/
 ```
 
 ## Quick Start
@@ -115,8 +114,8 @@ python run_all.py
 
 This requires MATLAB, Simulink, and Communications Toolbox. MATLAB is detected
 from `MATLAB_EXE`, then `matlab` on `PATH`, then `D:\matlab\bin\matlab.exe`.
-`python run_all.py --skip-matlab-step1` is development-only. It runs the
-Python-only scripts and skips completion artifacts that require the
+`python run_all.py --skip-reference-cosim` is development-only. It runs the
+Python-only scripts and skips screening-analysis artifacts that require the
 MATLAB/Simulink reference outputs.
 
 The workflow writes newly generated artifacts to `outputs/`:
@@ -126,8 +125,8 @@ outputs/
 ├── geo_satphone/
 ├── outage_capacity/
 ├── plots/
-├── requested_extensions/
-└── step1_link/
+├── screening_analysis/
+└── voice_link_screening/
 ```
 
 `outputs/` is intentionally ignored by Git. Reference CSV/PDF artifacts used by
@@ -142,7 +141,7 @@ Important generated files include:
 - `outputs/geo_satphone/screening_sensitivity_ranking.csv`
 - `outputs/geo_satphone/dwell_time_sensitivity.csv`
 - `outputs/outage_capacity/outage_capacity_results.json`
-- `outputs/requested_extensions/step1_completion_results.json`
+- `outputs/screening_analysis/screening_analysis_results.json`
 - `outputs/plots/geo_satphone_c0p01_sensitivity_ranking.pdf`
 - `outputs/plots/geo_satphone_dwell_time_sensitivity.pdf`
 
@@ -154,13 +153,13 @@ MATLAB, Simulink, and Communications Toolbox.
 From MATLAB:
 
 ```matlab
-cd("matlab_step1")
-run_step1_cosim_strict("../outputs/matlab_step1/step1_cosim_input_manifest.json")
+cd("matlab_voice_link")
+run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
 ```
 
 Normally `run_all.py` creates the manifest and invokes this entry point through
 `matlab.exe -batch`. Expected MATLAB staging outputs are written to
-`outputs/matlab_step1/`, and Python promotes canonical outputs to
+`outputs/matlab_voice_link/`, and Python promotes canonical outputs to
 `outputs/geo_satphone/`. See
 [MATLAB_SIMULINK.md](MATLAB_SIMULINK.md) for details.
 

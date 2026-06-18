@@ -1,4 +1,4 @@
-"""Filesystem paths for the standalone open-source Step 1 toolkit."""
+"""Filesystem paths for the standalone open-source voice-link toolkit."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,13 +10,13 @@ RESULTS_DIR = OUTPUTS_DIR
 FIGURES_DIR = OUTPUTS_DIR / "figures"
 SHARED_FIGURES_DIR = OUTPUTS_DIR / "plots"
 
-STEP1_DIR = OUTPUTS_DIR / "step1_link"
-STEP1_PLOTS_DIR = STEP1_DIR / "plots"
+SCREENING_DIR = OUTPUTS_DIR / "voice_link_screening"
+SCREENING_PLOTS_DIR = SCREENING_DIR / "plots"
 
 GEO_SATPHONE_DIR = RESULTS_DIR / "geo_satphone"
 OUTAGE_CAPACITY_DIR = RESULTS_DIR / "outage_capacity"
-REQUESTED_EXTENSIONS_DIR = RESULTS_DIR / "requested_extensions"
-MATLAB_STEP1_RESULTS_DIR = RESULTS_DIR / "matlab_step1"
+SCREENING_ANALYSIS_DIR = RESULTS_DIR / "screening_analysis"
+MATLAB_VOICE_LINK_RESULTS_DIR = RESULTS_DIR / "matlab_voice_link"
 
 
 def ensure_dirs(*paths: Path) -> None:

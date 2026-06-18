@@ -4,7 +4,7 @@
 
 这是一个面向科研和工程验证的开源工具项目，用于评估 GEO S-band 卫星手机语音链路在远程地区是否能稳定闭合。它不是某个手机厂商或某个终端的专有实现，也不包含私有实测数据；它提供的是一套透明、可运行、可修改的链路侧基线模型。
 
-本项目对应研究路线中的 Step 1：先建立链路侧低尾容量、语音 bearer 可用性和 MATLAB/Simulink 参考联合仿真基础。后续研究可以把这里得到的链路能力作为输入。
+本项目的落点是 GEO S-band 卫星手机语音链路筛选：给出链路闭合、低尾容量、语音 bearer 可用性和 MATLAB/Simulink 参考联合仿真的可运行工具。
 
 ## 这个项目能做什么
 
@@ -68,8 +68,8 @@ python run_all.py
 
 该流程需要 MATLAB、Simulink 和 Communications Toolbox。MATLAB 检测顺序为
 `MATLAB_EXE`、`matlab` on `PATH`、`D:\matlab\bin\matlab.exe`。
-`python run_all.py --skip-matlab-step1` 仅用于开发调试。它只运行 Python
-脚本，并跳过依赖 MATLAB/Simulink 参考输出的 completion 产物。
+`python run_all.py --skip-reference-cosim` 仅用于开发调试。它只运行 Python
+脚本，并跳过依赖 MATLAB/Simulink 参考输出的筛选分析产物。
 
 运行后会在 `outputs/` 下生成新的 CSV、JSON 和图件：
 
@@ -78,8 +78,8 @@ outputs/
 ├── geo_satphone/
 ├── outage_capacity/
 ├── plots/
-├── requested_extensions/
-└── step1_link/
+├── screening_analysis/
+└── voice_link_screening/
 ```
 
 `outputs/` 不提交到 Git。论文使用的参考 CSV/PDF 已放在 `expected_outputs/`，便于直接查看。
@@ -96,19 +96,19 @@ outputs/
 ├── run_all.py             # 主入口
 ├── src/                   # Python 计算脚本
 ├── expected_outputs/      # 已整理的参考输出
-└── matlab_step1/          # MATLAB/Simulink 参考联合仿真脚本
+└── matlab_voice_link/          # MATLAB/Simulink 参考联合仿真脚本
 ```
 
 ## MATLAB/Simulink
 
 MATLAB/Simulink 部分是参考流程。没有 MATLAB、Simulink 或 Communications Toolbox
-时，可以用 `--skip-matlab-step1` 做 Python-only 开发调试，但不会生成完整参考结果。
+时，可以用 `--skip-reference-cosim` 做 Python-only 开发调试，但不会生成完整参考结果。
 
 在 MATLAB 中运行：
 
 ```matlab
-cd("matlab_step1")
-run_step1_cosim_strict("../outputs/matlab_step1/step1_cosim_input_manifest.json")
+cd("matlab_voice_link")
+run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
 ```
 
 通常由 `run_all.py` 自动生成 manifest 并通过 `matlab.exe -batch` 调用该入口。
