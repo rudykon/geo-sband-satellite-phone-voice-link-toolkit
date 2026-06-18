@@ -3,7 +3,7 @@ function compareRows = voice_link_compare_with_python(cfg, voiceRows, outageRows
 
 compareRows = table();
 
-pyVoicePath = fullfile(cfg.rootDir, "outputs", "geo_satphone", "voice_availability.csv");
+pyVoicePath = fullfile(cfg.rootDir, "outputs", "data", "voice_link", "voice_availability.csv");
 if exist(pyVoicePath, "file")
     pyVoice = readtable(pyVoicePath);
     mainMatlab = voiceRows(voiceRows.voice_rate_bps == cfg.voice.mainRateBps, :);
@@ -25,7 +25,7 @@ if exist(pyVoicePath, "file")
     end
 end
 
-pyOutagePath = fullfile(cfg.rootDir, "outputs", "outage_capacity", "sigma_scan.csv");
+pyOutagePath = fullfile(cfg.rootDir, "outputs", "data", "outage_capacity", "sigma_scan.csv");
 if exist(pyOutagePath, "file")
     pyOutage = readtable(pyOutagePath);
     for k = 1:height(outageRows)

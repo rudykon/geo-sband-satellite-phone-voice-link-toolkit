@@ -9,7 +9,7 @@ fprintf('Exporting PHY/LMS/Python-MATLAB-Simulink alignment report...\n');
 
 matVoicePath = fullfile(cfg.outputDir, 'voice_availability_matlab.csv');
 simVoicePath = fullfile(cfg.outputDir, 'simulink_voice_availability.csv');
-pyVoicePath = fullfile(cfg.rootDir, 'outputs', 'geo_satphone', 'voice_availability.csv');
+pyVoicePath = fullfile(cfg.rootDir, 'outputs', 'data', 'voice_link', 'voice_availability.csv');
 phyThresholdPath = fullfile(cfg.outputDir, 'voice_threshold_from_phy.csv');
 lmsPath = fullfile(cfg.outputDir, 'lms_channel_availability.csv');
 lmsSimPath = fullfile(cfg.outputDir, 'lms_simulink_channel_availability.csv');

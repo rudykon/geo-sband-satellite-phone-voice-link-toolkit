@@ -9,7 +9,7 @@ function run_voice_link_reference_cosim(manifestPath)
 if nargin < 1 || strlength(string(manifestPath)) == 0
     thisDir = fileparts(mfilename('fullpath'));
     rootDir = fileparts(thisDir);
-    manifestPath = fullfile(rootDir, 'outputs', 'matlab_voice_link', 'voice_link_cosim_manifest.json');
+    manifestPath = fullfile(rootDir, 'outputs', 'data', 'reference_cosim', 'voice_link_cosim_manifest.json');
 end
 
 clearvars -except manifestPath;

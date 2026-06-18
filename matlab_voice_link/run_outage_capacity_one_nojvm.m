@@ -6,7 +6,7 @@ clear; clc;
 
 thisDir = fileparts(mfilename('fullpath'));
 rootDir = fileparts(thisDir);
-outDir = fullfile(rootDir, 'outputs', 'matlab_voice_link');
+outDir = fullfile(rootDir, 'outputs', 'data', 'reference_cosim');
 if ~exist(outDir, 'dir'), mkdir(outDir); end
 
 sigmaDb = str2double(getenv('SIGMA_DB'));

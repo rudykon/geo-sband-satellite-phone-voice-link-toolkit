@@ -10,14 +10,14 @@ Python remains the top-level orchestrator. The normal entry point is:
 python run_all.py
 ```
 
-That command writes `outputs/matlab_voice_link/voice_link_cosim_manifest.json`,
+That command writes `outputs/data/reference_cosim/voice_link_cosim_manifest.json`,
 calls MATLAB with `matlab.exe -batch`, runs `run_voice_link_reference_cosim.m`, validates
 the staging outputs, and promotes strict Simulink results into:
 
 ```text
-outputs/geo_satphone/voice_availability.csv
-outputs/geo_satphone/voice_link_reference_baseline.json
-outputs/geo_satphone/voice_availability_provenance.json
+outputs/data/voice_link/voice_availability.csv
+outputs/data/voice_link/voice_link_reference_baseline.json
+outputs/data/voice_link/voice_availability_provenance.json
 ```
 
 ## Strict MATLAB Entry Point
@@ -26,7 +26,7 @@ Manual MATLAB invocation is mainly for debugging:
 
 ```matlab
 cd("<project-root>\matlab_voice_link")
-run_voice_link_reference_cosim("<project-root>\outputs\matlab_voice_link\voice_link_cosim_manifest.json")
+run_voice_link_reference_cosim("<project-root>\outputs\data\reference_cosim\voice_link_cosim_manifest.json")
 ```
 
 The strict path:
@@ -46,7 +46,7 @@ Function block or if `sim()` cannot execute.
 ## Main Staging Outputs
 
 ```text
-outputs/matlab_voice_link/
+outputs/data/reference_cosim/
 ├── voice_link_cosim_manifest.json
 ├── voice_threshold_from_phy.csv
 ├── voice_availability_matlab.csv

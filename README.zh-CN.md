@@ -32,22 +32,22 @@
 
 ## 结果图示
 
-以下图片已提交到 `expected_outputs/plots/`，可以在 GitHub README 中直接显示。
+以下图片已提交到 `expected_outputs/figures/all/`，可以在 GitHub README 中直接显示。
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="平均 SNR 和单状态模型会扭曲低尾语音可用性" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_screening_baseline_comparison.png" alt="平均 SNR 和单状态模型会扭曲低尾语音可用性" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_sensitivity_ranking.png" alt="2.4 kbps 低尾筛选灵敏度排序" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_sensitivity_ranking.png" alt="2.4 kbps 低尾筛选灵敏度排序" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_dwell_time_sensitivity.png" alt="远程地区场景下 NLOS dwell-time 灵敏度" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_dwell_time_sensitivity.png" alt="远程地区场景下 NLOS dwell-time 灵敏度" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/outage_capacity_scenarios.png" alt="LOS/NLOS 混合惩罚下的中断容量对比" width="760">
+  <img src="expected_outputs/figures/all/outage_capacity_scenarios.png" alt="LOS/NLOS 混合惩罚下的中断容量对比" width="760">
 </p>
 
 ## 快速开始
@@ -75,14 +75,18 @@ python run_all.py
 
 ```text
 outputs/
-├── geo_satphone/
-├── outage_capacity/
-├── plots/
-├── screening_analysis/
-└── voice_link_screening/
+├── data/
+│   ├── voice_link/
+│   ├── outage_capacity/
+│   ├── screening_analysis/
+│   └── reference_cosim/
+├── figures/
+│   ├── all/
+│   └── screening_report/
+└── archive/
 ```
 
-`outputs/` 不提交到 Git。论文使用的参考 CSV/PDF 已放在 `expected_outputs/`，便于直接查看。
+`outputs/` 不提交到 Git。`archive/` 只保存本机旧运行残留；论文使用的参考 CSV/PDF 已放在 `expected_outputs/`，便于直接查看。
 
 ## 目录说明
 
@@ -108,7 +112,7 @@ MATLAB/Simulink 部分是参考流程。没有 MATLAB、Simulink 或 Communicati
 
 ```matlab
 cd("matlab_voice_link")
-run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
+run_voice_link_reference_cosim("../outputs/data/reference_cosim/voice_link_cosim_manifest.json")
 ```
 
 通常由 `run_all.py` 自动生成 manifest 并通过 `matlab.exe -batch` 调用该入口。

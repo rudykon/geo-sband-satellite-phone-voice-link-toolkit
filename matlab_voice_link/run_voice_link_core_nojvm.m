@@ -11,7 +11,7 @@ clear; clc;
 
 thisDir = fileparts(mfilename('fullpath'));
 rootDir = fileparts(thisDir);
-outDir = fullfile(rootDir, 'outputs', 'matlab_voice_link');
+outDir = fullfile(rootDir, 'outputs', 'data', 'reference_cosim');
 if ~exist(outDir, 'dir'), mkdir(outDir); end
 
 seed = 20260608;
@@ -124,7 +124,7 @@ validationPath = fullfile(outDir, 'matlab_python_validation.csv');
 fid = fopen(validationPath, 'w');
 fprintf(fid, 'metric,case_name,matlab_value,python_value,signed_error,absolute_error,unit\n');
 
-pyVoicePath = fullfile(rootDir, 'outputs', 'geo_satphone', 'voice_availability.csv');
+pyVoicePath = fullfile(rootDir, 'outputs', 'data', 'voice_link', 'voice_availability.csv');
 if exist(pyVoicePath, 'file')
     txt = fileread(pyVoicePath);
     for i = 1:numel(scenarioKey)
@@ -137,7 +137,7 @@ if exist(pyVoicePath, 'file')
     end
 end
 
-pyOutPath = fullfile(rootDir, 'outputs', 'outage_capacity', 'sigma_scan.csv');
+pyOutPath = fullfile(rootDir, 'outputs', 'data', 'outage_capacity', 'sigma_scan.csv');
 if exist(pyOutPath, 'file')
     txt = fileread(pyOutPath);
     for k = 1:numel(outSigma)

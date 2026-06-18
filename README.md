@@ -54,23 +54,23 @@ CSV/PNG/PDF artifacts under `expected_outputs/`.
 
 ## Visual Results
 
-The figures below are committed under `expected_outputs/plots/` so they render
+The figures below are committed under `expected_outputs/figures/all/` so they render
 directly on GitHub.
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening distort low-tail voice availability" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_screening_baseline_comparison.png" alt="Average-SNR and single-state screening distort low-tail voice availability" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_sensitivity_ranking.png" alt="Sensitivity ranking for 2.4 kbps low-tail screening" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_sensitivity_ranking.png" alt="Sensitivity ranking for 2.4 kbps low-tail screening" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/geo_satphone_dwell_time_sensitivity.png" alt="NLOS dwell-time sensitivity across remote-area scenarios" width="760">
+  <img src="expected_outputs/figures/all/geo_satphone_dwell_time_sensitivity.png" alt="NLOS dwell-time sensitivity across remote-area scenarios" width="760">
 </p>
 
 <p align="center">
-  <img src="expected_outputs/plots/outage_capacity_scenarios.png" alt="Outage-capacity comparison under LOS/NLOS mixture penalties" width="760">
+  <img src="expected_outputs/figures/all/outage_capacity_scenarios.png" alt="Outage-capacity comparison under LOS/NLOS mixture penalties" width="760">
 </p>
 
 ## Repository Layout
@@ -90,9 +90,8 @@ directly on GitHub.
 │   ├── voice_link_reference.py
 │   └── screening_analysis.py
 ├── expected_outputs/
-│   ├── geo_satphone/
-│   ├── matlab_voice_link/
-│   └── plots/
+│   ├── data/
+│   └── figures/
 └── matlab_voice_link/
 ```
 
@@ -122,28 +121,33 @@ The workflow writes newly generated artifacts to `outputs/`:
 
 ```text
 outputs/
-├── geo_satphone/
-├── outage_capacity/
-├── plots/
-├── screening_analysis/
-└── voice_link_screening/
+├── data/
+│   ├── voice_link/
+│   ├── outage_capacity/
+│   ├── screening_analysis/
+│   └── reference_cosim/
+├── figures/
+│   ├── all/
+│   └── screening_report/
+└── archive/
 ```
 
-`outputs/` is intentionally ignored by Git. Reference CSV/PDF artifacts used by
-the paper are committed under `expected_outputs/`.
+`outputs/` is intentionally ignored by Git. `archive/` is only for local legacy
+run artifacts. Reference CSV/PDF artifacts used by the paper are committed under
+`expected_outputs/`.
 
 ## Expected Outputs
 
 Important generated files include:
 
-- `outputs/geo_satphone/voice_availability.csv`
-- `outputs/geo_satphone/screening_baseline_comparison.csv`
-- `outputs/geo_satphone/screening_sensitivity_ranking.csv`
-- `outputs/geo_satphone/dwell_time_sensitivity.csv`
-- `outputs/outage_capacity/outage_capacity_results.json`
-- `outputs/screening_analysis/screening_analysis_results.json`
-- `outputs/plots/geo_satphone_c0p01_sensitivity_ranking.pdf`
-- `outputs/plots/geo_satphone_dwell_time_sensitivity.pdf`
+- `outputs/data/voice_link/voice_availability.csv`
+- `outputs/data/voice_link/screening_baseline_comparison.csv`
+- `outputs/data/voice_link/screening_sensitivity_ranking.csv`
+- `outputs/data/voice_link/dwell_time_sensitivity.csv`
+- `outputs/data/outage_capacity/outage_capacity_results.json`
+- `outputs/data/screening_analysis/screening_analysis_results.json`
+- `outputs/figures/all/geo_satphone_c0p01_sensitivity_ranking.pdf`
+- `outputs/figures/all/geo_satphone_dwell_time_sensitivity.pdf`
 
 ## MATLAB/Simulink Co-Simulation
 
@@ -154,13 +158,13 @@ From MATLAB:
 
 ```matlab
 cd("matlab_voice_link")
-run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
+run_voice_link_reference_cosim("../outputs/data/reference_cosim/voice_link_cosim_manifest.json")
 ```
 
 Normally `run_all.py` creates the manifest and invokes this entry point through
 `matlab.exe -batch`. Expected MATLAB staging outputs are written to
-`outputs/matlab_voice_link/`, and Python promotes canonical outputs to
-`outputs/geo_satphone/`. See
+`outputs/data/reference_cosim/`, and Python promotes canonical outputs to
+`outputs/data/voice_link/`. See
 [MATLAB_SIMULINK.md](MATLAB_SIMULINK.md) for details.
 
 ## Notes and Scope

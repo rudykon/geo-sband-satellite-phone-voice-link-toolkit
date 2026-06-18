@@ -23,7 +23,7 @@ baselines.
 Reference file:
 
 ```text
-expected_outputs/geo_satphone/screening_baseline_comparison.csv
+expected_outputs/data/voice_link/screening_baseline_comparison.csv
 ```
 
 Interpretation: average-SNR screening is too coarse for low-tail availability.
@@ -49,7 +49,7 @@ The strongest tested availability perturbation is NLOS excess loss.
 Reference file:
 
 ```text
-expected_outputs/geo_satphone/screening_sensitivity_ranking.csv
+expected_outputs/data/voice_link/screening_sensitivity_ranking.csv
 ```
 
 Interpretation: blockage and excess NLOS loss dominate the low-tail voice
@@ -71,7 +71,7 @@ lengths. The P95 NLOS burst length reaches:
 Reference file:
 
 ```text
-expected_outputs/geo_satphone/dwell_time_sensitivity.csv
+expected_outputs/data/voice_link/dwell_time_sensitivity.csv
 ```
 
 Interpretation: even when average LOS probability is unchanged, burst duration
@@ -85,7 +85,7 @@ model's narrowband voice setting.
 Reference file:
 
 ```text
-expected_outputs/geo_satphone/public_d2c_inverse_alignment.csv
+expected_outputs/data/voice_link/public_d2c_inverse_alignment.csv
 ```
 
 The checks are not fitted to private raw measurements; they are sanity anchors
@@ -97,7 +97,7 @@ space.
 The MATLAB/Simulink path is required for reference outputs. Python writes a
 manifest, MATLAB calibrates PHY thresholds, Simulink runs the strict
 availability model over 1.2/2.4/4.0 kbps, and Python promotes the result to
-`outputs/geo_satphone/voice_availability.csv`.
+`outputs/data/voice_link/voice_availability.csv`.
 
 | Rate | PHY threshold |
 | ---: | ---: |
@@ -108,9 +108,9 @@ availability model over 1.2/2.4/4.0 kbps, and Python promotes the result to
 Reference file:
 
 ```text
-expected_outputs/matlab_voice_link/voice_threshold_from_phy.csv
-expected_outputs/matlab_voice_link/simulink_voice_availability.csv
-expected_outputs/geo_satphone/voice_availability_provenance.json
+expected_outputs/data/reference_cosim/voice_threshold_from_phy.csv
+expected_outputs/data/reference_cosim/simulink_voice_availability.csv
+expected_outputs/data/voice_link/voice_availability_provenance.json
 ```
 
 Interpretation: strict Simulink output, not the legacy Python proxy, is the
@@ -118,7 +118,7 @@ reference voice-link voice availability source.
 
 ## Reference Figures
 
-The repository includes four PDF figures under `expected_outputs/plots/`:
+The repository includes four PDF figures under `expected_outputs/figures/all/`:
 
 - `geo_satphone_screening_baseline_comparison.pdf`
 - `geo_satphone_sensitivity_ranking.pdf`

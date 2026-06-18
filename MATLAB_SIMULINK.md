@@ -14,16 +14,16 @@ MATLAB 严格入口为：
 
 ```matlab
 cd("matlab_voice_link")
-run_voice_link_reference_cosim("../outputs/matlab_voice_link/voice_link_cosim_manifest.json")
+run_voice_link_reference_cosim("../outputs/data/reference_cosim/voice_link_cosim_manifest.json")
 ```
 
 预期生成文件包括：
 
-- `outputs/matlab_voice_link/voice_threshold_from_phy.csv`
-- `outputs/matlab_voice_link/simulink_voice_availability.csv`
-- `outputs/matlab_voice_link/voice_link_cosim_status.json`
-- `outputs/geo_satphone/voice_availability.csv`
-- `outputs/geo_satphone/voice_link_reference_baseline.json`
-- `outputs/geo_satphone/voice_availability_provenance.json`
+- `outputs/data/reference_cosim/voice_threshold_from_phy.csv`
+- `outputs/data/reference_cosim/simulink_voice_availability.csv`
+- `outputs/data/reference_cosim/voice_link_cosim_status.json`
+- `outputs/data/voice_link/voice_availability.csv`
+- `outputs/data/voice_link/voice_link_reference_baseline.json`
+- `outputs/data/voice_link/voice_availability_provenance.json`
 
 `run_phy_lms_alignment` 和 LMS 相关脚本仍可用于附加信道验证，但不能替代 strict co-simulation 主路径。`--skip-reference-cosim` 仅用于 Python-only 开发调试，不会生成完整参考结果。
