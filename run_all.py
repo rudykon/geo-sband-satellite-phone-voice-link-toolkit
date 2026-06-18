@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the GEO S-band satellite-phone voice-link toolkit workflow."""
+"""Run the GEO S-Band VoiceLink workflow."""
 from __future__ import annotations
 
 import argparse

@@ -1,10 +1,10 @@
-# GEO S-Band Satellite Phone Voice Link Toolkit
+# GEO S-Band VoiceLink
 
 [中文说明](README.zh-CN.md)
 
-This repository is a standalone open-source research toolkit for GEO S-band
-satellite-phone voice-link screening. It estimates link closure, low-tail
-capacity, and voice-bearer availability in remote-area scenarios.
+GEO S-Band VoiceLink is a standalone open-source research toolkit for GEO
+S-band satellite-phone voice-link screening. It estimates link closure,
+low-tail capacity, and voice-bearer availability in remote-area scenarios.
 
 The toolkit provides a public-parameter, vendor-neutral screening workflow for
 estimating whether a handheld satellite-phone style terminal can close a
@@ -47,7 +47,7 @@ streamlit run app.py
 
 ## What This Toolkit Does
 
-- Builds a generic GEO S-band satellite-phone voice-link approximation.
+- Builds a generic GEO S-band voice-link approximation.
 - Computes narrowband carrier budgets, voice availability, and outage-capacity
   validation outputs.
 - Compares average-SNR and single-state screening against a LOS/NLOS mixture
